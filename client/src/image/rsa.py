@@ -3,7 +3,13 @@ from Crypto.PublicKey import RSA
 from Crypto import Random
 import base64
 
-def makeRSAkeys():
+# need to install pycrypto module
+# using pip install pycrypto
+# https://pypi.org/project/pycrypto/
+# https://www.dlitz.net/software/pycrypto/api/current/
+
+
+def makeRSAprivatekey():
     length = 1024 #bits
     privatekey = RSA.generate(length, Random.new().read)
     publickey = privatekey.publickey()
@@ -21,9 +27,9 @@ def decrypt(privatekey, b64cipher):
 
 def main():
     privatekey, publickey = makeRSAkeys()
-    message = b'hello world'
+    message = b'hello lizeth'
     encrypted = encrypt(publickey, message)
-    #print(encrypted)
+    print(encrypted)
 
     decrypted = decrypt(privatekey, encrypted)
     #print(decrypted)
