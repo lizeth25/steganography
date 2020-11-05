@@ -2,7 +2,7 @@
 
 import cv2
 
-img = cv2.imread('nakagawa.jpg')
+# img = cv2.imread('nakagawa.jpg')
 
 # cv2.imshow('image', img)
 # cv2.waitKey(0)
@@ -38,7 +38,7 @@ def encode(image, message):
                     i+=1
                 else:
                     break
-    cv2.imshow('new image', img_copy)
+    # cv2.imshow('new image', img_copy)
     return img_copy
 
 def decode(image):
@@ -90,7 +90,3 @@ def decode(image):
     out_msg = binaryToText(hidden_msg)
     print("Your decoded message is : \n" + out_msg)
     return(out_msg)
-
-my_str = "Hi im Lizeth Lucero! Hi im Lizeth Lucero! "
-encoded_img = encode(img, my_str)
-decoded_msg = decode(encoded_img)
