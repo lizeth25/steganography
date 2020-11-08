@@ -58,7 +58,8 @@ const Navigation = () => {
     >
       <Title>
         {" "}
-        ... {decoderButton} {encoderButton} {homeButton}{" "}
+        <div align="center">@ Midd </div> {decoderButton} {encoderButton}{" "}
+        {homeButton}{" "}
       </Title>
 
       <div></div>

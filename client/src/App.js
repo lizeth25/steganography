@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import styled from "styled-components";
 
@@ -20,7 +19,7 @@ const App = () => {
         backgroundColor: "black"
       }}
     >
-      <Title> Steganography @ Midd </Title>
+      <Title> Steganography </Title>
       <Navigation> </Navigation>
       <Home></Home>
     </div>
