@@ -27,14 +27,8 @@ def decrypt(privatekey, b64cipher):
 
 def main():
     privatekey, publickey = makeRSAkeys()
-    #print(vars(publickey))
-    #print("///")
-    #pprint(vars(publickey))
-    #print(publickey.__dict__)
-    #pprint.pprint(publickey.__dict__)
-
-    print("Public Key pair: ")
-    print(publickey)
+    print("Public key pair:  ")
+    print(f"(n = {bin(publickey.n)}, e = {bin(publickey.e)})")
 
     message = b'Yay'
 
