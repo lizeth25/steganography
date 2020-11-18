@@ -13,18 +13,21 @@
   "keywords": [],
   "contributors": [
     "Student1 <student1@middlebury.edu>",
-    "Student2 <student2@middlebury.edu>",
-    "Student3 <student2@middlebury.edu>",
-    "Student4 <student3@middlebury.edu>",
-    "Student5 <student4@middlebury.edu>",
-    "Student6 <student5@middlebury.edu>",
-    "Student7 <student6@middlebury.edu>"
+    "Student2 <student2@middlebury.edu>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-scripts": "3.4.0"
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.12",
+    "bootstrap": "^4.4.1",
+    "i": "^0.3.6",
+    "npm": "^6.14.8",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-scripts": "3.4.0",
+    "reactstrap": "^8.7.1",
+    "styled-components": "^5.0.1"
   },
   "devDependencies": {
     "enzyme": "^3.11.0",
