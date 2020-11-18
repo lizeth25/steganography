@@ -9,7 +9,7 @@ from Crypto import Random
 import base64
 from pprint import pprint
 
-def makeRSAprivatekey():
+def makeRSAkeys():
     length = 1024 #bits
     privatekey = RSA.generate(length, Random.new().read)
     publickey = privatekey.publickey()
