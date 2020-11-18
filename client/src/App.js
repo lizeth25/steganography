@@ -121,10 +121,12 @@ const App = () => {
         <div
           style={{
             backgroundColor: "#00DE66",
-            padding: "1em"
+            padding: "2em"
           }}
         >
-          {currentButton} {encoderButton} {decoderButton}
+          <div style={{ float: "right", align: "right", margin: "-20px 0px" }}>
+            {currentButton} {encoderButton} {decoderButton}
+          </div>
         </div>
         <Home></Home>
       </div>
@@ -136,10 +138,12 @@ const App = () => {
         <div
           style={{
             backgroundColor: "#00DE66",
-            padding: "1em"
+            padding: "2em"
           }}
         >
-          {homeButton} {currentButton} {decoderButton}
+          <div style={{ float: "right", align: "right", margin: "-20px 0px" }}>
+            {homeButton} {currentButton} {decoderButton}
+          </div>
         </div>
         <Encoder></Encoder>
       </div>
@@ -151,10 +155,12 @@ const App = () => {
         <div
           style={{
             backgroundColor: "#00DE66",
-            padding: "1em"
+            padding: "2em"
           }}
         >
-          {homeButton} {encoderButton} {currentButton}
+          <div style={{ float: "right", align: "right", margin: "-20px 0px" }}>
+            {homeButton} {encoderButton} {currentButton}
+          </div>
         </div>
         <Decoder></Decoder>
       </div>
