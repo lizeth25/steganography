@@ -1,28 +1,23 @@
 import cv2
 import os
 
-#cv2 read and write changes pixels
-#shutil copies one image to another directory
-#imsave the copy
+vidcap = cv2.VideoCapture("testvideo.MOV")
 
-#vidcap = cv2.VideoCapture("testvideo.MOV")
-
-#count = 0
-#while True:
-#    success, image = vidcap.read()
-#    if not success:
-#        break
-#    cv2.imwrite(os.path.join("./temp", "{:d}.png".format(count)), image)
-#    count += 1
-
-# audio
+count = 0
+while True:
+    success, image = vidcap.read()
+    if not success:
+        break
+    cv2.imwrite(os.path.join("./temp", "{:d}.png".format(count)), image)
+    count += 1
 
 # brew install ffmpeg
 
 from subprocess import call, STDOUT
 
+# audio
 
-# call(["ffmpeg", "-i", "testvideo.MOV", "audio.mp3"], stdout = open(os.devnull, "w"), stderr = STDOUT)
+call(["ffmpeg", "-i", "testvideo.MOV", "audio.mp3"], stdout = open(os.devnull, "w"), stderr = STDOUT)
 
 ############
 
@@ -37,7 +32,6 @@ def encode(image, message):
     msg_begin = str(len(message)) + '*' + message
     msg = textToBinary(msg_begin)
     msgLen = len(msg)
-    pixels_len = image.size // 3
     img_copy = image
     i = 0
 
@@ -51,7 +45,6 @@ def encode(image, message):
                     i+=1
                 else:
                     break
-    # cv2.imshow('new image', img_copy)
     return img_copy
 
 def videoencode(video, message):
@@ -67,7 +60,6 @@ def videoencode(video, message):
     msgcopy = msg
 
     msgcount = 0
-
 
     if count >= msgLen:
         for filename in os.listdir("./temp"):
@@ -93,12 +85,12 @@ def videoencode(video, message):
                 namecount += 1
 
 
-#videoencode("video", "Lizeth")
+# videoencode("video", "Lizeth")
 
 # stitch frames together
 
-# call(["ffmpeg", "-i", "./temp3/%d.png" , "-vcodec", "libx264", "-pix_fmt", "yuv420p", "newvideo.MOV", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
+call(["ffmpeg", "-i", "./temp3/%d.png" , "-vcodec", "libx264", "-pix_fmt", "yuv420p", "newvideo.MOV", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
 
 # add audio
 
-# call(["ffmpeg", "-i", "newvideo.MOV", "-i", "audio.mp3", "-codec", "copy", "data/enc-", "newvideo2.mov", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
+call(["ffmpeg", "-i", "newvideo.MOV", "-i", "audio.mp3", "-codec", "copy", "data/enc-", "newvideo2.mov", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
