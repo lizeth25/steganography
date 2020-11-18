@@ -5,6 +5,19 @@ import PropTypes from "prop-types";
 const Title = styled.h1`
   text-align: center;
   color: black;
+  font-family: Kohinoor Bangla;
+  font-size: 24px;
+  padding: 0.5em;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+`;
+
+const Description = styled.p`
+  text-align: center;
+  color: black;
+  font-family: Kohinoor Bangla;
+  font-size: 18px;
+  padding: 0em 5em;
 `;
 
 const Home = () => {
@@ -14,8 +27,9 @@ const Home = () => {
         backgroundColor: "white"
       }}
     >
+      <div style={{ padding: "20px 0px" }}></div>
       <Title> What is Steganography?</Title>
-      <p>
+      <Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
         neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
@@ -29,10 +43,12 @@ const Home = () => {
         semper feugiat nibh sed pulvinar proin gravida hendrerit. Cursus sit
         amet dictum sit amet. Enim blandit volutpat maecenas volutpat blandit.
         Mattis pellentesque id nibh tortor id aliquet lectus proin.
-      </p>
+      </Description>
+
+      <div style={{ padding: "10px 0px" }}></div>
 
       <Title> What about Encryption and Cryptography?</Title>
-      <p>
+      <Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
         neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
@@ -46,10 +62,12 @@ const Home = () => {
         semper feugiat nibh sed pulvinar proin gravida hendrerit. Cursus sit
         amet dictum sit amet. Enim blandit volutpat maecenas volutpat blandit.
         Mattis pellentesque id nibh tortor id aliquet lectus proin.
-      </p>
+      </Description>
+
+      <div style={{ padding: "10px 0px" }}></div>
 
       <Title> Encoder & Decoder Tools</Title>
-      <p>
+      <Description>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
         neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
@@ -63,7 +81,7 @@ const Home = () => {
         semper feugiat nibh sed pulvinar proin gravida hendrerit. Cursus sit
         amet dictum sit amet. Enim blandit volutpat maecenas volutpat blandit.
         Mattis pellentesque id nibh tortor id aliquet lectus proin.
-      </p>
+      </Description>
     </div>
   );
 };
