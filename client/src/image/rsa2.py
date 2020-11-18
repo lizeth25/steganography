@@ -61,16 +61,6 @@ def rsa():
     print("c: ")
     print(c)
 
-def encrypt(e, n, message):
-    key = e
-
-    #Convert each letter in the plaintext to numbers based on the character using a^b mod m
-    cipher = [(ord(char) ** key) % n for char in message]
-
-    #Return the array of bytes
-    return cipher
-
-
 def inverse(e, toitent):
 
     u1 = 1
