@@ -119,25 +119,6 @@ const Home = () => {
         steganography can be combined with encryption as an extra step for
         hiding or protecting data.
       </Description>
-
-      <div style={{ padding: "10px 0px" }}></div>
-
-      <Title> Encoder & Decoder Tools</Title>
-      <Description>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
-        neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
-        quis ipsum suspendisse ultrices gravida dictum. Nullam eget felis eget
-        nunc. Turpis nunc eget lorem dolor. Lorem mollis aliquam ut porttitor
-        leo a. Dolor sit amet consectetur adipiscing elit. Non odio euismod
-        lacinia at quis risus sed vulputate. Ornare massa eget egestas purus
-        viverra accumsan. Nibh tortor id aliquet lectus proin nibh. Turpis nunc
-        eget lorem dolor sed viverra ipsum nunc. Interdum posuere lorem ipsum
-        dolor sit. Amet nulla facilisi morbi tempus iaculis urna. Praesent
-        semper feugiat nibh sed pulvinar proin gravida hendrerit. Cursus sit
-        amet dictum sit amet. Enim blandit volutpat maecenas volutpat blandit.
-        Mattis pellentesque id nibh tortor id aliquet lectus proin.
-      </Description>
     </div>
   );
 };
