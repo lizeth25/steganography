@@ -39,7 +39,16 @@ const Home = () => {
         </div>
       </Description>
 
-      <div style={{ padding: "20px 0px" }}></div>
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
+      <div style={{ padding: "10px 0px" }}></div>
+
       <Title> What is Steganography?</Title>
       <Description>
         Steganography is the practice of sending data in a concealed format so
@@ -151,6 +160,14 @@ const Home = () => {
         </div>
       </Description>
 
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "10px 0px" }}></div>
 
       <Title> What about Cryptography?</Title>
