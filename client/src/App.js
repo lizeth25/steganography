@@ -117,7 +117,7 @@ const App = () => {
   if (mode === "Home") {
     return (
       <div style={{ backgroundColor: "black", padding: "0em" }}>
-        <Title>Steganography</Title>
+        <Title>Welcome to StegMsg</Title>
         <div
           style={{
             backgroundColor: "#00DE66",
@@ -134,7 +134,7 @@ const App = () => {
   } else if (mode === "Encoder") {
     return (
       <div style={{ backgroundColor: "black", padding: "0em" }}>
-        <Title>Steganography</Title>
+        <Title>StegMsg</Title>
         <div
           style={{
             backgroundColor: "#00DE66",
@@ -151,7 +151,7 @@ const App = () => {
   } else {
     return (
       <div style={{ backgroundColor: "black", padding: "0em" }}>
-        <Title>Steganography</Title>
+        <Title>StegMsg</Title>
         <div
           style={{
             backgroundColor: "#00DE66",
