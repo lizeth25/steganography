@@ -45,6 +45,14 @@ const Home = () => {
       </Description>
 
       <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
+      <div style={{ padding: "10px 0px" }}></div>
 
       <Title> Uses of Steganography </Title>
       <Description>
@@ -61,6 +69,14 @@ const Home = () => {
         begin.
       </Description>
 
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "10px 0px" }}></div>
 
       <Title> Recent Examples of Malicious Use </Title>
@@ -96,6 +112,14 @@ const Home = () => {
         </div>
       </Description>
 
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "10px 0px" }}></div>
 
       <Title> What about Cryptography?</Title>
