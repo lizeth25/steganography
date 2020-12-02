@@ -7,7 +7,6 @@ import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
 import base64
-from pprint import pprint
 
 def makeRSAkeys():
     length = 1024 #bits
@@ -39,10 +38,10 @@ def main():
 
     print("Encrypted: ")
     print(str(encrypted).strip('b'))
-    decrypted = decrypt(privatekey, encrypted)
-    #print(decrypted)
 
+    decrypted = decrypt(privatekey, encrypted)
     msg = str(decrypted)
-    #print(msg.strip('b'))
+    print("Decrypted: ")
+    print(msg.strip('b'))
 
 main()
