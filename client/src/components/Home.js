@@ -12,7 +12,7 @@ const Title = styled.h1`
   margin-block-end: 0em;
 `;
 
-const Description = styled.p`
+const Description = styled.div`
   text-align: center;
   color: black;
   font-family: Kohinoor Bangla;
