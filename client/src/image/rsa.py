@@ -29,19 +29,28 @@ def main():
     print("Public key pair:  ")
     print(f"(n = {bin(publickey.n)}, e = {bin(publickey.e)})")
 
-    message = b'Yay'
+    print("Private key pair:  ")
+    print(f"(n = {bin(privatekey.n)}, e = {bin(privatekey.e)})")
+
+    msg = "Yay"
+
+    encodedmsg = msg.encode()
 
     print("Message to encrypt: ")
-    print("Yay")
-    encrypted = encrypt(publickey, message)
-    #print(encrypted)
+    print(msg)
+    encrypted = encrypt(publickey, encodedmsg)
+
 
     print("Encrypted: ")
-    print(str(encrypted).strip('b'))
+    encrypted2 = str(encrypted).strip('b')
+    encrypted3 = str(encrypted2).strip("'")
+    print(encrypted3)
 
-    decrypted = decrypt(privatekey, encrypted)
-    msg = str(decrypted)
+
+    decrypted = str(decrypt(privatekey, encrypted))
     print("Decrypted: ")
-    print(msg.strip('b'))
+    decrypted2 = decrypted.strip('b')
+    decrypted3 = decrypted2.strip("'")
+    print(decrypted3)
 
 main()

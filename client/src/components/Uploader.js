@@ -50,11 +50,14 @@ const Uploader = () => {
   };
   function attempt() {
     axios
-      .post("http://localhost:3001/", { crossdomain: true })
+      .get("http://localhost:3001/", {
+        crossdomain: true,
+        params: { msg_received: message }
+      })
       .then(response => {
-        let c = response.data.text;
-        console.log("printing message");
-        console.log(message);
+        let c = response.data.msg_received;
+        console.log("printing server message");
+        console.log(c);
       });
   }
 

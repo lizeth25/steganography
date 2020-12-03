@@ -62,12 +62,12 @@ app.use(function(req, res, next) {
 });
 
 app.get("/", function(req, res) {
-  res.send(out);
+  res.send(req.query);
 });
 
-app.post("/", function(req, res) {
-  res.send(out);
-});
+// app.post("/", function(req, res) {
+//   res.send(out);
+// });
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3001;

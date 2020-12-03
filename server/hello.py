@@ -1,7 +1,10 @@
 
 import json
 
-d = { "text": "hello", "author" : "jonas"}
+public_key = rsa.encrypt()
+
+
+d = { "text": "server hello", "author" : "jonas"}
 y = json.dumps(d)
 
 print(y)
