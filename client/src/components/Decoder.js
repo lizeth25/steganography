@@ -32,10 +32,8 @@ const Decoder = () => {
 
       <Title> Instructions </Title>
       <Description>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
-        neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
-        quis ipsum suspendisse
+        Upload the encoded photo or video, as well as the private key pair
+        needed to decrypt the message.
       </Description>
 
       <div style={{ padding: "1em" }}>

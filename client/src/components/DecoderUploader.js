@@ -32,7 +32,7 @@ const DecoderUploader = () => {
           }}
         >
           <label htmlFor="customKey" style={{ padding: "0px 10px 0px 0px" }}>
-            Encryption Key:
+            Private Key Pair:
           </label>
           <input
             type="text"
