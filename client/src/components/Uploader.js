@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 const Description = styled.div`
   text-align: center;
@@ -16,10 +17,16 @@ const Uploader = () => {
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
 
   const [imgData, setImgData] = useState(null);
+  const [message, setMessage] = useState("");
 
   const uploadedFile = e => {
     setFile(e.target.files[0]);
     setFileName(e.target.files[0].name);
+  };
+  const uploadedMessage = e => {
+    console.log("Message is ");
+    console.log(e.target.value);
+    setMessage(e.target.value);
   };
   const onSubmit = e => {
     e.preventDefault();
@@ -33,6 +40,7 @@ const Uploader = () => {
       setImgData(reader.result);
     });
     reader.readAsDataURL(file);
+    attempt();
 
     // check restrictions of file
     // check if message longer than
@@ -40,6 +48,15 @@ const Uploader = () => {
     // use final file w/ script
     // return rsa key
   };
+  function attempt() {
+    axios
+      .post("http://localhost:3001/", { crossdomain: true })
+      .then(response => {
+        let c = response.data.text;
+        console.log("printing message");
+        console.log(message);
+      });
+  }
 
   if (mode === "Start") {
     return (
@@ -65,6 +82,7 @@ const Uploader = () => {
               type="text"
               id="customText"
               placeholder="Message"
+              onChange={uploadedMessage}
             />
           </div>
 
