@@ -60,10 +60,8 @@ const Encoder = () => {
 
       <Title> Instructions </Title>
       <Description>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
-        neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
-        quis ipsum suspendisse
+        Upload a photo or video of your choice, as well as the message you wish
+        to encode in the file.
       </Description>
 
       <div style={{ padding: "1em" }}>
