@@ -42,5 +42,8 @@
     "{client/src,server}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "wrapup": "^1.0.7"
   }
 }

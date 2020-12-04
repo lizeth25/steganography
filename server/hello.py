@@ -14,14 +14,16 @@ import sys
 
 aS = sys.argv[1]
 aSL = list(aS.split(","))
-aL = list(map(int, aSL)) 
+aL = list(map(int, aSL)) # array to use
 
-k = sys.argv[2]
+k = sys.argv[2] # message to use
 # a = []
 # for i in range(1545):
 #     a.append(255)
 
-dict = { "arr": aL, "privateKey": k }
+nImage, pKey = to_encode(aL, k)
+
+dict = { "arr": nImage, "privateKey": pKey }
 y = json.dumps(dict)
 
 print(y)
