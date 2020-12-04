@@ -59,14 +59,12 @@ app.get("/", function(req, res) {
 
   console.log("2img array is : ");
   console.log(ima);
-
-  // // use python script then send to server
+  console.log("before process");
+  // use python script then send to server
   const next_process = spawn("python3", ["./hello.py", ima, msgToEncode]);
-
+  let out;
   next_process.stdout.on("data", data => {
-    let out = JSON.parse(data);
-    // let out = data
-    console.log("out is");
+    out = JSON.parse(data);
     console.log(out);
     res.send(out);
   });

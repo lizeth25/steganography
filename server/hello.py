@@ -1,6 +1,7 @@
 
 import json
-from imageencoder import to_encode,to_decode
+# from imageencoder import to_encode,to_decode
+import sys
 
 # public_key = rsa.encrypt()
 
@@ -9,8 +10,6 @@ from imageencoder import to_encode,to_decode
 # y = json.dumps(d)
 
 # print(y)
-
-import sys
 
 aS = sys.argv[1]
 aSL = list(aS.split(","))
@@ -21,9 +20,9 @@ k = sys.argv[2] # message to use
 # for i in range(1545):
 #     a.append(255)
 
-nImage, pKey = to_encode(aL, k)
+# nImage, pKey = to_encode(aL, k)
 
-dict = { "arr": nImage, "privateKey": pKey }
+dict = { "arr": aL, "privateKey": k }
 y = json.dumps(dict)
 
 print(y)
