@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -10,22 +10,30 @@ const Description = styled.div`
   padding: 0em 5em;
 `;
 
+var wrup = require("wrapup")();
+
+wrup.require("get-pixels", "get-pixels").up(function(err, js) {
+  console.log(js);
+});
+
+var getPixels = require("get-pixels");
+
 const Uploader = () => {
   const [file, setFile] = useState("");
   const [fileName, setFileName] = useState("Choose Image or Video");
-  const [finalFile, setFinalFile] = useState("");
+  // const [finalFile, setFinalFile] = useState("");
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
 
-  const [imgData, setImgData] = useState(null);
+  const [imgData, setImgData] = useState("");
   const [message, setMessage] = useState("");
+  var imgUInt;
+  var imgPixels;
 
   const uploadedFile = e => {
     setFile(e.target.files[0]);
     setFileName(e.target.files[0].name);
   };
   const uploadedMessage = e => {
-    console.log("Message is ");
-    console.log(e.target.value);
     setMessage(e.target.value);
   };
   const onSubmit = e => {
@@ -40,7 +48,8 @@ const Uploader = () => {
       setImgData(reader.result);
     });
     reader.readAsDataURL(file);
-    attempt();
+    //reader.readAsArrayBuffer(file);
+    // attempt();
 
     // check restrictions of file
     // check if message longer than
@@ -48,18 +57,161 @@ const Uploader = () => {
     // use final file w/ script
     // return rsa key
   };
-  function attempt() {
+  // function attempt() {
+  //   axios
+  //     .get("http://localhost:3001/", {
+  //       crossdomain: true,
+  //       params: { msg_received: message }
+  //     })
+  //     .then(response => {
+  //       let c = response.data.msg_received;
+  //       console.log("printing server message");
+  //       console.log(c);
+  //     });
+  // }
+
+  function sendData(d) {
+    //param d : imgData
+
+    // convert array to image
+    // combine first 'half' of array received with last half
+
+    getPixels(d, function(err, pixels) {
+      //if(err) {
+      //    console.log("Bad image path")
+      //   return
+      //}
+      let pxs = pixels.data;
+      imgPixels = Array.from(pxs); // Uint8Arr to []
+
+      console.log("lizeth");
+      console.log(imgPixels);
+    });
+
+    // set only partial array
+    console.log("erika");
+    console.log(imgPixels);
+    let max_arr = imgPixels.slice(0, 104);
+
+    let URL = "http://localhost:3001/";
     axios
-      .get("http://localhost:3001/", {
+      .get(URL, {
         crossdomain: true,
-        params: { msg_received: message }
+        params: {
+          imsrc: max_arr,
+          msg: message
+        }
       })
       .then(response => {
-        let c = response.data.msg_received;
-        console.log("printing server message");
-        console.log(c);
+        //handle success
+        console.log("sent to server");
+        let imArr = response.data.arr;
+        let privateKey = response.data.privateKey;
+        console.log("printing pixel");
+        console.log(imArr);
+        console.log("printing privateKey");
+        console.log(privateKey);
+
+        let final_imageArr = imArr.concat(
+          imgPixels.slice(104, imgPixels.length)
+        );
+        imgUInt = new Uint8Array(final_imageArr);
+        // combine the first and last of our private key
+        // give private key to user
+      })
+      .catch(error => {
+        //handle error
+        console.log(error);
       });
   }
+
+  const content = new Uint8Array([
+    137,
+    80,
+    78,
+    71,
+    13,
+    10,
+    26,
+    10,
+    0,
+    0,
+    0,
+    13,
+    73,
+    72,
+    68,
+    82,
+    0,
+    0,
+    0,
+    5,
+    0,
+    0,
+    0,
+    5,
+    8,
+    6,
+    0,
+    0,
+    0,
+    141,
+    111,
+    38,
+    229,
+    0,
+    0,
+    0,
+    28,
+    73,
+    68,
+    65,
+    84,
+    8,
+    215,
+    99,
+    248,
+    255,
+    255,
+    63,
+    195,
+    127,
+    6,
+    32,
+    5,
+    195,
+    32,
+    18,
+    132,
+    208,
+    49,
+    241,
+    130,
+    88,
+    205,
+    4,
+    0,
+    14,
+    245,
+    53,
+    203,
+    209,
+    142,
+    14,
+    31,
+    0,
+    0,
+    0,
+    0,
+    73,
+    69,
+    78,
+    68,
+    174,
+    66,
+    96,
+    130
+  ]);
 
   if (mode === "Start") {
     return (
@@ -129,22 +281,39 @@ const Uploader = () => {
           message was encoded, it was encrypted with RSA. The private key pair
           needed to decrypt the message is:
         </Description>
-
-        <a
-          style={{
-            padding: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-          href={imgData}
-          download
-        >
-          Click here to download the new image
-        </a>
+        <div>
+          {sendData(imgData)}
+          <a
+            style={{
+              padding: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+            href={URL.createObjectURL(
+              new Blob([content.buffer], { type: "image/jpeg" } /* (1) */)
+            )}
+            download
+          >
+            Click here to download the new image
+          </a>
+        </div>
       </div>
     );
   }
 };
 
 export default Uploader;
+//src={imgData?imgData:""}>
+/*
+         <img 
+          alt = "Submitted"
+          style={{
+            width:"150px",
+            height:"auto"
+          }}
+          src={URL.createObjectURL(
+            new Blob([content.buffer], { type: 'image/png' })
+          )}>
+          </img>
+*/

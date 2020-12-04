@@ -1,11 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 
 const DecoderUploader = () => {
   const [fileToDecode, setFileToDecode] = useState("");
   const [fileNameToDecode, setFileNameToDecode] = useState(
     "Choose Image or Video"
   );
-  const [finalFileToDecode, setFinalFileToDecode] = useState("");
+  // const [finalFileToDecode, setFinalFileToDecode] = useState("");
 
   const uploadedFileToDecode = e => {
     setFileToDecode(e.target.files[0]);

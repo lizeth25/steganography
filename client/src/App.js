@@ -1,7 +1,7 @@
 import "./App.css";
 import styled from "styled-components";
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+// import PropTypes from "prop-types";
 import { Button } from "reactstrap";
 
 // import { library } from '@fortawesome/fontawesome-svg-core'
@@ -11,7 +11,6 @@ import { Button } from "reactstrap";
 import Home from "./components/Home";
 import Encoder from "./components/Encoder";
 import Decoder from "./components/Decoder";
-import Navigation from "./components/Navigation";
 
 // library.add(faAngleRight)
 // library.add(faAngleDown)
