@@ -4,10 +4,6 @@ import React, { useState } from "react";
 // import PropTypes from "prop-types";
 import { Button } from "reactstrap";
 
-// import { library } from '@fortawesome/fontawesome-svg-core'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons'
-
 import Home from "./components/Home";
 import Encoder from "./components/Encoder";
 import Decoder from "./components/Decoder";
