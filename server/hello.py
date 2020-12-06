@@ -88,7 +88,9 @@ def decodeIm(image):
                         index += 1
                     else:
                         foundMsg = True
-
+    
+    if not foundMsg:
+        return("Not an encoded image")
     # Our message now contains all the bits we need to convert
     out_msg = binaryToText(hidden_msg)
     # print("Your decoded message is : \n" + out_msg)
@@ -161,15 +163,6 @@ def convertToList(a):
         outArr.append(int(elem))
     return(outArr)
 
-i = sys.argv[1]
-m = sys.argv[2] # message to use
-
-aL = convertToList(i)
-newArr, string_privatekey = to_encode(m, aL)
-
-dict = { "arr": newArr, "privateKey": str(string_privatekey) }
-y = json.dumps(dict)
-print(y)
 
 
 
