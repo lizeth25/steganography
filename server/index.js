@@ -62,9 +62,9 @@ app.get("/", function(req, res) {
   console.log("before process");
   // use python script then send to server
   const next_process = spawn("python3", ["./hello.py", ima, msgToEncode]);
-  let out;
   next_process.stdout.on("data", data => {
-    out = JSON.parse(data);
+    console.log("After process");
+    let out = JSON.parse(data);
     console.log(out);
     res.send(out);
   });

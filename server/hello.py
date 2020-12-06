@@ -26,21 +26,21 @@ def encodeIm(image, message):
     msg_begin = str(len(message)) + '*' + message
     msg = textToBinary(msg_begin)
     msgLen = len(msg)
-    img_copy = image
+    arr_copy = image
     i = 0
 
-    for index in range(0,len(img_copy)):
+    for index in range(0,len(arr_copy)):
         if index%4!=3:
             # check if i is less than msgLen
             if i < msgLen:
-                binNum = f'{img_copy[index]:08b}'
+                binNum = f'{arr_copy[index]:08b}'
                 newBin = binNum[:-1] + msg[i]
-                img_copy[index] = int(newBin, 2)
+                arr_copy[index] = int(newBin, 2)
                 i+=1
             else:
                 break
     # cv2.imshow('new image', img_copy)
-    return img_copy
+    return arr_copy
 
 def decodeIm(image):
     # using * as signal to denote when the length of the message is done being encoded into message
@@ -129,13 +129,7 @@ def to_encrypt(message):
 
     string_privatekey = privatekey.exportKey()
     return (encrypted3, string_privatekey)
- 
-# encrypted3, string_privatekey = to_encrypt("hi cs701")
-encrypted3 = "hufzNo4SLG4/4+P2Q9vwx4QjGFO9oOByprZb9ER84uIBctC+7kqekGKwarDm3XpXwBdOtw+NMyZYS0oCPDLOvu/JnTVMO5vejtJxfvWnmYCHP4Ds10owRJrMJVxXMPPyJ+VeisdXKgEfca9004b+n3sHT4Rgir+hBtA9hJEIy+Y="
-# print("    ")
-string_privatekey = "b'-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCy6N0i/VKKczS762g/6rHVwwAqkkvrnnar6oxJirq9mPr6hemZ\nfgaxf0Y3NzArb7dtBbV6BEe95e6OsHWy7xErokdfK4BPxT9irv2oF/EK6XK4WfD5\nqj/M4I4VzEeAtR0fUhq2cUwaEeiiB6MpwYhsE+6a2qI9fsQ7Q6qQpSrqtQIDAQAB\nAoGAOEK0L6mbyD/8SE/544epTsBYkAqbZ0fYp61FWmcO3Ep8OkXcNNGFx1FvwjNP\nqYkjFFykOe+Yo+Xng+WHzbISIrDXPePIK81R/e6uwpjrmr6gP3HtVXrGK9p0EBho\n52wa0Qy1PbUJ4/dt4zd73NugKdmLl5oZC8sn0rVSKPTWvCECQQDNCLxs7DOuRPev\nLAOCOZh91b1hqSt70Zit/64Z06WsIRdjvkTags5dFS221OTaeN6twAgn39xGLBuk\nDqu2evI5AkEA32G0qAUXPTozV2iWsFipIqXcbC2gsQmEi8uTTdLr4P7yu6oP5p0P\n0SycFeNrTfmI+wntUaAiY6pMWjkAT1hMXQJBAKKhTkwbYrbVL507jSDrLGCLfCcN\nt1cEHlXNmzwTG7MXoGTWU+j6nlNI7DS8UzZTb1VkH1P5hdAHRnlvxZX9mUkCQBx3\nty4yd+O1pxVcnteadPOVb6HZrsDhFaM7LmqclrL1yrlf0ubw3TMrHDkt4l7tjidv\n/G6KmddZvKFC4mc6OYECQHLc2eStzycklCMW46wEgG6hnbPW3CZCJnV/Tk+0oVGj\nfnxVIcbaodyUXbI9id90iB3j0HTLFBeUJqXRxfqEHbo=\n-----END RSA PRIVATE KEY-----'"
-
-
+    
 def to_decrypt(string_privatekey, encrypted):
 
     privatekey = RSA.importKey(string_privatekey)
@@ -159,43 +153,27 @@ def to_decode(img_copy, string_privatekey):
     decrypted3 = to_decrypt(string_privatekey, out_msg)
     return (decrypted3)
 
+def convertToList(a):
+    outArr = []
+    aS = a[:].replace("'", "").replace(" ", "")
+    a = aS.split(',')
+    for elem in a:
+        outArr.append(int(elem))
+    return(outArr)
 
+i = sys.argv[1]
+m = sys.argv[2] # message to use
 
-# public_key = rsa.encrypt()
+aL = convertToList(i)
+newArr, string_privatekey = to_encode(m, aL)
 
-
-# d = { "pixels": "server hello", "author" : "jonas"}
-# y = json.dumps(d)
-
-# print(y)
-
-aS = sys.argv[1]
-aSL = list(aS.split(","))
-aL = list(map(int, aSL)) # array to use
-
-k = sys.argv[2] # message to use
-# a = []
-# for i in range(1545):
-#     a.append(255)
-
-# nImage, pKey = to_encode(k, aL)
-iE = encodeIm(aL, encrypted3)
-
-dict = { "arr": iE, "privateKey": string_privatekey }
+dict = { "arr": newArr, "privateKey": str(string_privatekey) }
 y = json.dumps(dict)
-
 print(y)
 
-# if __name__ == "__main__":
-#     st = sys.argv[1]
 
-#     d = { "pixels": st, "msg" : "jonas"}
-#     y = json.dumps(d)
-
-#     print(y)
-
-# dict = { "arr": [1,2,3], "privateKey": m }
-# y = json.dumps(dict)
 
 # 1546 error opt 2 193 characters
 #1525 error opt 1 190 chars
+# 1449 breaks there with max 110 message input length
+# key size is 890
