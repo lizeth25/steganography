@@ -3,13 +3,17 @@ import os
 
 vidcap = cv2.VideoCapture("testvideo.MOV")
 
-count = 0
+images = []
+
+#count = 0
 while True:
     success, image = vidcap.read()
     if not success:
         break
-    cv2.imwrite(os.path.join("./temp", "{:d}.png".format(count)), image)
-    count += 1
+    images.append(image)
+    #cv2.imwrite(os.path.join("./temp", "{:d}.png".format(count)), image)
+    #count += 1
+
 
 # brew install ffmpeg
 
@@ -17,7 +21,7 @@ from subprocess import call, STDOUT
 
 # audio
 
-call(["ffmpeg", "-i", "testvideo.MOV", "audio.mp3"], stdout = open(os.devnull, "w"), stderr = STDOUT)
+#call(["ffmpeg", "-i", "testvideo.MOV", "audio.mp3"], stdout = open(os.devnull, "w"), stderr = STDOUT)
 
 ############
 
@@ -85,12 +89,53 @@ def videoencode(video, message):
                 namecount += 1
 
 
-# videoencode("video", "Lizeth")
+
+def videoencode2(video, message):
+    msg_begin = str(len(message)) + '*' + message
+    msg = textToBinary(msg_begin)
+
+    #msg = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+    msgLen = len(msg)
+
+    count = 206
+
+    msgcopy = msg
+
+    msgcount = 0
+
+    newimages = []
+    if count >= msgLen:
+        for image in images:
+            if msgcount < msgLen:
+                newimg = encode(image, msgcopy[msgcount])
+                newimages.append(newimg)
+            else:
+                newimages.append(image)
+            msgcount += 1
+    else:
+        namecount = 0
+        parts = (msgLen // count) + 1
+        if (msgLen / parts) < count:
+            for image in images:
+                if msgcount < msgLen:
+                    newimg = encode(image, msgcopy[msgcount: msgcount + parts])
+                    newimages.append(newimg)
+                else:
+                    newimages.append(image)
+                msgcount += parts
+                namecount += 1
+
+     
+
+videoencode2("video", "Lizeth")
+
+
 
 # stitch frames together
 
-call(["ffmpeg", "-i", "./temp3/%d.png" , "-vcodec", "libx264", "-pix_fmt", "yuv420p", "newvideo.MOV", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
+#call(["ffmpeg", "-i", "./temp3/%d.png" , "-vcodec", "libx264", "-pix_fmt", "yuv420p", "newvideo.MOV", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
 
 # add audio
 
-call(["ffmpeg", "-i", "newvideo.MOV", "-i", "audio.mp3", "-codec", "copy", "data/enc-", "newvideo2.mov", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)
+#call(["ffmpeg", "-i", "newvideo.MOV", "-i", "audio.mp3", "-codec", "copy", "data/enc-", "newvideo2.mov", "-y"], stdout = open(os.devnull, "w"), stderr = STDOUT)

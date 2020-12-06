@@ -1,17 +1,12 @@
 import "./App.css";
 import styled from "styled-components";
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+// import PropTypes from "prop-types";
 import { Button } from "reactstrap";
-
-// import { library } from '@fortawesome/fontawesome-svg-core'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 import Home from "./components/Home";
 import Encoder from "./components/Encoder";
 import Decoder from "./components/Decoder";
-import Navigation from "./components/Navigation";
 
 // library.add(faAngleRight)
 // library.add(faAngleDown)
@@ -117,7 +112,7 @@ const App = () => {
   if (mode === "Home") {
     return (
       <div style={{ backgroundColor: "black", padding: "0em" }}>
-        <Title>Steganography</Title>
+        <Title>Welcome to StegMsg</Title>
         <div
           style={{
             backgroundColor: "#00DE66",
@@ -134,7 +129,7 @@ const App = () => {
   } else if (mode === "Encoder") {
     return (
       <div style={{ backgroundColor: "black", padding: "0em" }}>
-        <Title>Steganography</Title>
+        <Title>StegMsg</Title>
         <div
           style={{
             backgroundColor: "#00DE66",
@@ -151,7 +146,7 @@ const App = () => {
   } else {
     return (
       <div style={{ backgroundColor: "black", padding: "0em" }}>
-        <Title>Steganography</Title>
+        <Title>StegMsg</Title>
         <div
           style={{
             backgroundColor: "#00DE66",

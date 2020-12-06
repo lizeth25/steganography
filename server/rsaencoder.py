@@ -1,12 +1,8 @@
-# need to install pycrypto module
-# using pip install pycrypto
-# https://pypi.org/project/pycrypto/
-# https://www.dlitz.net/software/pycrypto/api/current/
-
 import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
 import base64
+from imageencoder import encode, decoder
 
 def makeRSAkeys():
     length = 1024 #bits

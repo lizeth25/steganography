@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { Button, Collapse } from "reactstrap";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Uploader from "./Uploader";
 
 const Title = styled.h1`
   text-align: center;
@@ -28,14 +29,6 @@ const HeaderDescriptions = styled.p`
   font-family: Kohinoor Bangla;
   font-size: 18px;
   padding: 0em 2em;
-`;
-
-const Upload = styled.div`
-  text-align: center;
-  color: black;
-  font-family: Kohinoor Bangla;
-  padding: 0em 2em;
-  align: center;
 `;
 
 const SubHeaders = styled(Button)`
@@ -67,24 +60,22 @@ const Encoder = () => {
 
       <Title> Instructions </Title>
       <Description>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Mattis rhoncus urna
-        neque viverra justo nec ultrices dui sapien. Ut tristique et egestas
-        quis ipsum suspendisse
+        Upload a photo or video of your choice, as well as the message you wish
+        to encode in the file.
       </Description>
 
+      <div style={{ padding: "1em" }}>
+        <Uploader></Uploader>
+      </div>
+
       <div style={{ padding: "20px 0px" }}></div>
-
-      <Upload>
-        <form onSubmit={console.log("submitted!")}>
-          <label>
-            Upload File
-            <input style={{ padding: "0px 0px 0px 50px" }} type="file" />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-      </Upload>
-
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "20px 0px" }}></div>
 
       <Title> Techniques </Title>

@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 const Title = styled.h1`
   text-align: center;
@@ -12,7 +12,7 @@ const Title = styled.h1`
   margin-block-end: 0em;
 `;
 
-const Description = styled.p`
+const Description = styled.div`
   text-align: center;
   color: black;
   font-family: Kohinoor Bangla;
@@ -28,6 +28,27 @@ const Home = () => {
       }}
     >
       <div style={{ padding: "20px 0px" }}></div>
+      <Title> What is StegMsg?</Title>
+      <Description>
+        <div>
+          StegMsg provides a new, fun way for you to message your friends.
+        </div>
+        <div>
+          The next time you want to send a secret message, StegMsg can hide it
+          in a photo or video of your choice using steganography!
+        </div>
+      </Description>
+
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
+      <div style={{ padding: "10px 0px" }}></div>
+
       <Title> What is Steganography?</Title>
       <Description>
         Steganography is the practice of sending data in a concealed format so
@@ -35,15 +56,22 @@ const Home = () => {
         The secret data is then extracted only at its destination. There are
         many ways to conceal information using steganography. It is often used
         to hide secret messages or data within media files such as images,
-        videos or audio files. The most common method is by embedding
-        information into digital images. The difference between the original
-        image and the steganographic image would be so subtle that the two
-        cannot be distinguished by the naked eye. The purpose of steganography
-        is to conceal and deceive, so its advantage is that it can be used to
-        secretly transmit messages without the fact of the transmission being
-        discovered.
+        videos or audio files. The most common method embeds information into
+        digital images. The difference between the original image and the
+        steganographic image would be so subtle that the two cannot be
+        distinguished by the naked eye. The purpose of steganography is to
+        conceal and deceive, so its advantage is that it can be used to secretly
+        transmit messages without the fact of the transmission being discovered.
       </Description>
 
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "10px 0px" }}></div>
 
       <Title> Uses of Steganography </Title>
@@ -61,6 +89,14 @@ const Home = () => {
         begin.
       </Description>
 
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "10px 0px" }}></div>
 
       <Title> Recent Examples of Malicious Use </Title>
@@ -96,6 +132,42 @@ const Home = () => {
         </div>
       </Description>
 
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
+      <div style={{ padding: "10px 0px" }}></div>
+
+      <Title> Raising Awareness </Title>
+      <Description>
+        <div>
+          We hope that by educating you on steganographic cyber attacks, you
+          will be cautious the next time you might download a file from an
+          untrusted source. You never know what you will get.
+        </div>
+        <div>
+          We also hope that you find the practice of stegnography to be as cool
+          as we do, and that you might consider pursuing the field of cyber
+          security.
+        </div>
+        <div>
+          We encourage our users to only use StegMsg for its intended purposes
+          and we do not tolerate any malicious intent.
+        </div>
+      </Description>
+
+      <div style={{ padding: "10px 0px" }}></div>
+      <div
+        style={{
+          border: "0.50px",
+          borderStyle: "solid",
+          borderColor: "#cdd3d8"
+        }}
+      ></div>
       <div style={{ padding: "10px 0px" }}></div>
 
       <Title> What about Cryptography?</Title>
