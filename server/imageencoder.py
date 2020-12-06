@@ -1,15 +1,10 @@
-# encoder
-
 import cv2
 import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
 import base64
-
-# img = cv2.imread('nakagawa.jpg')
-
-# cv2.imshow('image', img)
-# cv2.waitKey(0)
+import json
+import sys
 
 def textToBinary(x):
     result = ''
@@ -24,35 +19,30 @@ def binaryToText(b):
         temp = b[i:i + 8]
         result = result + chr(int(temp, 2))
     return result
-def encode(image, message):
+def encodeIm(image, message):
     # params
     # image : array
     # message : string
     msg_begin = str(len(message)) + '*' + message
     msg = textToBinary(msg_begin)
     msgLen = len(msg)
-    img_copy = image
+    arr_copy = image
     i = 0
 
-    for index in range(0,len(img_copy)):
+    for index in range(0,len(arr_copy)):
         if index%4!=3:
             # check if i is less than msgLen
             if i < msgLen:
-                binNum = f'{img_copy[index]:08b}'
+                binNum = f'{arr_copy[index]:08b}'
                 newBin = binNum[:-1] + msg[i]
-                img_copy[index] = int(newBin, 2)
+                arr_copy[index] = int(newBin, 2)
                 i+=1
             else:
                 break
     # cv2.imshow('new image', img_copy)
-    return img_copy
+    return arr_copy
 
-content = [137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 5, 0, 0, 0, 5, 8, 6, 0, 0, 0, 141, 111, 38, 229, 0, 0, 0, 28, 73, 68, 65, 84, 8, 215, 99, 248, 255, 255, 63, 195, 127, 6, 32, 5, 195, 32, 18, 132, 208, 49, 241, 130, 88, 205, 4, 0, 14, 245, 53, 203, 209, 142, 14, 31, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 90]
-newArr = encode(content, "hi")
-print(newArr)
-print(len(newArr))
-
-def decode(image):
+def decodeIm(image):
     # using * as signal to denote when the length of the message is done being encoded into message
     signal = "00101010" # represents the first *
     len_str = "" # bin string w/ length
@@ -115,17 +105,17 @@ def makeRSAkeys():
     length = 1024 #bits
     privatekey = RSA.generate(length, Random.new().read)
     publickey = privatekey.publickey()
-    return privatekey, publickey
+    return (privatekey, publickey)
 
 def encrypt(publickey, message):
     cipher_text = publickey.encrypt(message, 32)[0]
     b64cipher = base64.b64encode(cipher_text)
-    return b64cipher
+    return (b64cipher)
 
 def decrypt(privatekey, b64cipher):
     decoded_ciphertext = base64.b64decode(b64cipher)
     message = privatekey.decrypt(decoded_ciphertext)
-    return message
+    return (message)
 
 def to_encrypt(message):
     privatekey, publickey = makeRSAkeys()
@@ -138,8 +128,8 @@ def to_encrypt(message):
     encrypted3 = str(encrypted2).strip("'")
 
     string_privatekey = privatekey.exportKey()
-    return encrypted, string_privatekey
- 
+    return (encrypted3, string_privatekey)
+    
 def to_decrypt(string_privatekey, encrypted):
 
     privatekey = RSA.importKey(string_privatekey)
@@ -149,16 +139,34 @@ def to_decrypt(string_privatekey, encrypted):
     decrypted2 = decrypted.strip('b')
     decrypted3 = decrypted2.strip("'")
 
-    return decrypted3
+    return(decrypted3)
 
 def to_encode(message, image):
     encrypted, string_privatekey = to_encrypt(message)
-    img_copy = encode(image, encrypted)
-    return img_copy, string_privatekey
+    img_copy = encodeIm(image, encrypted)
+    return (img_copy, string_privatekey)
 
 def to_decode(img_copy, string_privatekey):
-    out_msg = decode(img_copy)
+    out_msg = decodeIm(img_copy)
     if(out_msg == "Not an encoded image"):
-        return "Not an encoded image"
+        return("Not an encoded image")
     decrypted3 = to_decrypt(string_privatekey, out_msg)
-    return decrypted3
+    return (decrypted3)
+
+def convertToList(a):
+    outArr = []
+    aS = a[:].replace("'", "").replace(" ", "")
+    a = aS.split(',')
+    for elem in a:
+        outArr.append(int(elem))
+    return(outArr)
+
+i = sys.argv[1]
+m = sys.argv[2] # message to use
+
+aL = convertToList(i)
+newArr, string_privatekey = to_encode(m, aL)
+
+dict = { "arr": newArr, "privateKey": str(string_privatekey) }
+y = json.dumps(dict)
+print(y)
