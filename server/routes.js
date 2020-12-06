@@ -34,10 +34,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-// TODO: Add your routes here
 app.get("/encoded", (req, res) => {
   let ima = req.query.imsrc; // partial array of the image uploaded
+  console.log(ima);
   let msgToEncode = req.query.msg;
+  console.log(typeof msgToEncode);
   // exceptions
   // use python script then send to server
   const next_process = spawn("python3", [
@@ -46,18 +47,16 @@ app.get("/encoded", (req, res) => {
     msgToEncode
   ]);
   next_process.stdout.on("data", data => {
+    console.log("out of thin");
     res.send(JSON.parse(data));
   });
 });
 
-// TODO: Add your routes here
 app.get("/decoded", (req, res) => {
   let ima = req.query.imsrc; // partial array of the image uploaded
   let key = req.query.key;
   console.log(ima);
   console.log(key);
-  // exceptions
-  // use python script then send to server
   const next_processD = spawn("python3", ["./imagedecoder.py", ima, key]);
   next_processD.stdout.on("data", data => {
     console.log(JSON.parse(data));

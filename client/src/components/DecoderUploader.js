@@ -162,7 +162,7 @@ const DecoderUploader = () => {
         </form>
       </Fragment>
     );
-  } else if (mode == "End") {
+  } else if (mode === "End") {
     return (
       <div>
         <Description>

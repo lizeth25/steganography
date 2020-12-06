@@ -30,7 +30,7 @@ def encodeIm(image, message):
     i = 0
 
     for index in range(0,len(arr_copy)):
-        if index%4!=3:
+        if(index%4!=3):
             # check if i is less than msgLen
             if i < msgLen:
                 binNum = f'{arr_copy[index]:08b}'
@@ -57,10 +57,10 @@ def decodeIm(image):
     # Then we keep and index and for every set of 8 bin numbers we have one character we add to our message
 
     # calculate length of the message by adding appropriate bin value to len_str until * tells us when to stop adding
-    for index in range(0, len(image)):
-        if index%4!=3:
+    for i in range(0, len(image)):
+        if(i%4!=3):
             if not foundMsg:
-                binNum = f'{image[index]:08b}'
+                binNum = f'{image[i]:08b}'
                 least_bit = binNum[-1]
                 if not foundLen:
                     if (len_str!="") and (len(len_str)%8 == 0):
@@ -88,7 +88,7 @@ def decodeIm(image):
                         index += 1
                     else:
                         foundMsg = True
-    
+        
     if not foundMsg:
         return("Not an encoded image")
     # Our message now contains all the bits we need to convert
@@ -163,7 +163,19 @@ def convertToList(a):
         outArr.append(int(elem))
     return(outArr)
 
+# encrypted3 (172)
+# (172*8+8+24 = how long array needs to be for image to be encoded)
+# returning 496(img array) , private
 
+# getKeys = return the keys private public
+# {
+#     k = thing encoding into image
+#     image arr = (len([1348]))
+# }
+
+
+
+# getImage = give 1348 return array 1348 we should be fine
 
 
 # 1546 error opt 2 193 characters
