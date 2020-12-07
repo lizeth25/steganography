@@ -24,7 +24,6 @@ const DescriptionLight = styled.div`
   word-wrap: break-word;
 `;
 
-// need to npm install downloadjs
 var download = require("downloadjs");
 
 const Uploader = () => {
@@ -34,8 +33,6 @@ const Uploader = () => {
 
   const [imgData, setImgData] = useState("");
   const [message, setMessage] = useState("");
-
-  var imgPixels;
 
   // taken from
   // https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
@@ -89,7 +86,7 @@ const Uploader = () => {
       if (arrayBuffer) uarray = new Uint8Array(arrayBuffer);
       else uarray = new Uint8Array(bytes);
 
-      input = input.replace(/[^A-Za-z0-9+/=]/g, "");
+      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, ""); // eslint-disable-line no-useless-escape
 
       for (i = 0; i < bytes; i += 3) {
         //get the 3 octects in 4 ascii chars
@@ -147,7 +144,7 @@ const Uploader = () => {
     var normalArray = Array.from(uint8View);
 
     // can rename normalArray to imgPixels, which is what we modify to send partial array
-    imgPixels = normalArray;
+    var imgPixels = normalArray;
 
     // SEND PARTIAL ARRAY AND CHANGE PIXELS
 
@@ -155,15 +152,14 @@ const Uploader = () => {
     let arrThres;
     imgPixels.length > 496 ? (arrThres = 496) : (arrThres = imgPixels.length);
     let max_arr = imgPixels.slice(0, arrThres);
-    console.log("norm arr");
-    console.log(normalArray);
+
     let url = "http://localhost:3001/encoded";
     axios
       .get(url, {
         crossdomain: true,
         params: {
           imsrc: max_arr,
-          msg: message.toString()
+          msg: message
         }
       })
       .then(response => {
@@ -172,17 +168,9 @@ const Uploader = () => {
         let imArr = response.data.arr;
         setPrivateKey(response.data.privateKey);
         console.log("printing pixel");
-        console.log(max_arr); // works
-        // console.log(typeof(max_arr[2]))
-        console.log("___________________________________");
         console.log(imArr);
-        // console.log(typeof(imArr[2]))
-        // console.log(response.data.privateKey)
 
-        let final_imageArr1 = max_arr.concat(
-          imgPixels.slice(arrThres, imgPixels.length)
-        );
-        let final_imageArr2 = imArr.concat(
+        let final_imageArr = imArr.concat(
           imgPixels.slice(arrThres, imgPixels.length)
         );
 
@@ -192,36 +180,17 @@ const Uploader = () => {
         // RECIEVE ARRAY BACK
 
         // Array --> ArrayBuffer
-        var newArrayBuffer1 = new Uint16Array(final_imageArr1);
-        console.log("buffer1");
-        console.log(newArrayBuffer1);
-        console.log("___________________________________");
-        var newArrayBuffer2 = new Uint16Array(final_imageArr2);
-        console.log("buffer2");
-        console.log(newArrayBuffer2);
+        var newArrayBuffer = new Uint16Array(final_imageArr);
 
         // ArrayBuffer --> base64
-        var almost1 = _arrayBufferToBase64(newArrayBuffer1);
-        almost1 = almost1.slice(19, almost1.length - 6);
-        var almost2 = _arrayBufferToBase64(newArrayBuffer2);
-        almost2 = almost2.slice(19, almost2.length - 6);
-        console.log("almost1");
-        console.log(almost1);
-        console.log("___________________________________");
-        console.log("almost2");
-        console.log(almost2);
-        // base64 !!!
-        var encodedImage1 = "data:image/png;base64," + almost1 + "=";
-        var encodedImage2 = "data:image/png;base64," + almost2 + "=";
-        console.log("___________________________________");
+        var almost = _arrayBufferToBase64(newArrayBuffer);
+        almost = almost.slice(19, almost.length - 6);
 
-        console.log("encodedImage1");
-        console.log(encodedImage1);
-        console.log("encodedImage2");
-        console.log(encodedImage2);
+        // base64 !!!
+        var encodedImage = "data:image/png;base64," + almost + "=";
 
         // automatically downloads image for you
-        download(encodedImage1, "encodedImage1.png");
+        download(encodedImage, "encodedImage.png");
 
         // combine the first and last of our private key
         // give private key to user
@@ -303,6 +272,7 @@ const Uploader = () => {
         </Description>
         <DescriptionLight>
           {privateKey ? privateKey : ""}
+          {imgData ? imgData : "False"}
           <div></div>
         </DescriptionLight>
 
