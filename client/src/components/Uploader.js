@@ -28,16 +28,12 @@ const DescriptionLight = styled.div`
 var download = require("downloadjs");
 
 const Uploader = () => {
-  const [file, setFile] = useState("");
   const [fileName, setFileName] = useState("Choose Image or Video");
-  // const [finalFile, setFinalFile] = useState("");
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
   const [privateKey, setPrivateKey] = useState("");
 
   const [imgData, setImgData] = useState("");
   const [message, setMessage] = useState("");
-  const [imgUInt, setImgUIInt] = useState("");
-  let content;
 
   var imgPixels;
 
@@ -93,7 +89,7 @@ const Uploader = () => {
       if (arrayBuffer) uarray = new Uint8Array(arrayBuffer);
       else uarray = new Uint8Array(bytes);
 
-      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+      input = input.replace(/[^A-Za-z0-9+/=]/g, "");
 
       for (i = 0; i < bytes; i += 3) {
         //get the 3 octects in 4 ascii chars
@@ -117,7 +113,6 @@ const Uploader = () => {
 
   const uploadedFile = e => {
     const f = e.target.files[0];
-    setFile(f);
     setFileName(f.name);
     const reader = new FileReader();
     reader.addEventListener("load", () => {
@@ -226,7 +221,7 @@ const Uploader = () => {
         console.log(encodedImage2);
 
         // automatically downloads image for you
-        // download(encodedImage1, "encodedImage1.png");
+        download(encodedImage1, "encodedImage1.png");
 
         // combine the first and last of our private key
         // give private key to user

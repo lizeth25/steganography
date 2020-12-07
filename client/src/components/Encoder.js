@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-// import PropTypes from "prop-types";
 import { Button, Collapse } from "reactstrap";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Uploader from "./Uploader";
 
 const Title = styled.h1`

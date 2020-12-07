@@ -33,7 +33,6 @@ const DescriptionLight = styled.div`
 `;
 
 const DecoderUploader = () => {
-  const [fileToDecode, setFileToDecode] = useState("");
   const [fileNameToDecode, setFileNameToDecode] = useState(
     "Choose Image or Video"
   );
@@ -47,7 +46,6 @@ const DecoderUploader = () => {
   };
   const uploadedFileToDecode = e => {
     const f = e.target.files[0];
-    setFileToDecode(f);
     setFileNameToDecode(f.name);
     const reader = new FileReader();
     reader.addEventListener("load", () => {
@@ -88,7 +86,7 @@ const DecoderUploader = () => {
           crossdomain: true,
           params: {
             imsrc: max_arr,
-            key: uploadedKey
+            pkey: uploadedKey
           }
         })
         .then(response => {

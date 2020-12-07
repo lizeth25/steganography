@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path"); // eslint-disable-line global-require
-const spawn = require("child_process").spawn;
-// var wrup = require("wrapup")();
+const { spawn } = require("child_process").spawn;
+
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -24,8 +24,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-// TODO: Add any middleware here
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -35,31 +34,21 @@ app.use(function(req, res, next) {
 });
 
 app.get("/encoded", (req, res) => {
-  let ima = req.query.imsrc; // partial array of the image uploaded
-  console.log(ima);
-  let msgToEncode = req.query.msg;
-  console.log(typeof msgToEncode);
+  const ima = req.query.imsrc; // partial array of the image uploaded
+  const msgToEncode = req.query.msg;
   // exceptions
   // use python script then send to server
-  const next_process = spawn("python3", [
-    "./imageencoder.py",
-    ima,
-    msgToEncode
-  ]);
-  next_process.stdout.on("data", data => {
-    console.log("out of thin");
+  const nextProcess = spawn("python3", ["./imageencoder.py", ima, msgToEncode]);
+  nextProcess.stdout.on("data", data => {
     res.send(JSON.parse(data));
   });
 });
 
 app.get("/decoded", (req, res) => {
-  let ima = req.query.imsrc; // partial array of the image uploaded
-  let key = req.query.key;
-  console.log(ima);
-  console.log(key);
-  const next_processD = spawn("python3", ["./imagedecoder.py", ima, key]);
-  next_processD.stdout.on("data", data => {
-    console.log(JSON.parse(data));
+  const ima = req.query.imsrc; // partial array of the image uploaded
+  const pKey = req.query.pkey;
+  const nextProcessD = spawn("python3", ["./imagedecoder.py", ima, pKey]);
+  nextProcessD.stdout.on("data", data => {
     res.send(JSON.parse(data));
   });
 });
