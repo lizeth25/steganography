@@ -24,7 +24,12 @@ const DescriptionLight = styled.div`
   word-wrap: break-word;
 `;
 
+//var dojox = require("dojox");
+// const CIP = require('canvas_image_processing');
+
 var download = require("downloadjs");
+
+const imageToUri = require("image-to-uri");
 
 const Uploader = () => {
   const [file, setFile] = useState("");
@@ -156,6 +161,9 @@ const Uploader = () => {
     imgPixels.length > 496 ? (arrThres = 496) : (arrThres = imgPixels.length);
     let max_arr = imgPixels.slice(0, arrThres);
 
+    console.log("max_arr");
+    console.log(max_arr);
+
     let url = "http://localhost:3001/encoded";
     axios
       .get(url, {
@@ -170,7 +178,7 @@ const Uploader = () => {
         console.log("sent to server");
         let imArr = response.data.arr;
         setPrivateKey(response.data.privateKey);
-        console.log("printing pixel");
+        console.log("imArr");
         console.log(imArr);
 
         let final_imageArr = imArr.concat(
@@ -185,12 +193,36 @@ const Uploader = () => {
         // Array --> ArrayBuffer
         var newArrayBuffer = new Uint16Array(final_imageArr);
 
+        // var str = dojox.encoding.base64.encode(newArrayBuffer);
+        // console.log("str");
+        // console.log(str);
+
         // ArrayBuffer --> base64
         var almost = _arrayBufferToBase64(newArrayBuffer);
         almost = almost.slice(19, almost.length - 6);
 
         // base64 !!!
         var encodedImage = "data:image/png;base64," + almost + "=";
+
+        // canvas ?
+        var c = document.createElement("canvas");
+        var customFile = document.getElementById("customFile");
+        c.height = customFile.height;
+        c.width = customFile.width;
+        var ctx = c.getContext("2d");
+
+        ctx.drawImage(customFile, 0, 0, c.width, c.height);
+        var base64String = c.toDataURL();
+
+        //string imageBase64 = Convert.ToBase64String(item.ImageData);
+
+        // let imagem = imageToUri(d);
+        // console.log("imagem");
+        // console.log(imagem);
+
+        // var encodedImage2 = CIP.imageToCanvas(d);
+        // console.log("encodedImage2");
+        // console.log(encodedImage2);
 
         // automatically downloads image for you
         download(encodedImage, "encodedImage.png");

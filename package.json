@@ -38,8 +38,13 @@
     ]
   },
   "dependencies": {
+    "canvas_image_processing": "0.0.5",
     "cors": "^2.8.5",
+    "dojo": "^1.16.3",
+    "dojox": "^1.16.3",
     "downloadjs": "^1.4.7",
+    "fs": "0.0.1-security",
+    "image-to-uri": "^1.0.0",
     "wrapup": "^1.0.7"
   }
 }
