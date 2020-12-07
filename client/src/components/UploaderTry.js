@@ -1,7 +1,6 @@
-import React, { Fragment, useState } from "react";
+import { check } from "prettier";
+import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import FormData from "form-data";
 
 const Description = styled.div`
   text-align: center;
@@ -25,56 +24,119 @@ const DescriptionLight = styled.div`
   word-wrap: break-word;
 `;
 
-// <p>{privateKey?privateKey:"none"}</p>
+var download = require("downloadjs");
 
-var wrup = require("wrapup")();
+function textToBinary(t) {
+  var out = "";
+  for (var i = 0; i < t.length; i++) {
+    var b = t[i].charCodeAt().toString(2);
+    b = new Array(9 - b.length).join("0") + b;
+    out += b;
+  }
+  return out;
+}
 
-wrup.require("get-pixels", "get-pixels").up(function(err, js) {
-  console.log(js);
-});
+/*
+TO DO 
+decoder
+set canvas width and height 
+updating our server to only receive message, and send back encrypted3 and private key
+useEffect?
+png vs jpeg download
 
-// var getPixels = require("get-pixels");
 
-const UploaderTry = () => {
-  const [file, setFile] = useState("");
+
+
+go/csmajorss
+based on new changes we can update our max message length
+
+video potentially
+
+
+textToBinary will not work with special characters like those who have more than 8bits
+
+*/
+
+const Uploader = () => {
   const [fileName, setFileName] = useState("Choose Image or Video");
-  // const [finalFile, setFinalFile] = useState("");
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
-  const [privateKey, setPrivateKey] = useState("");
-
   const [imgData, setImgData] = useState("");
   const [message, setMessage] = useState("");
-  const [imgUInt, setImgUIInt] = useState("");
-  let content;
+  const [image, setImage] = useState(null);
+  const canvas = React.useRef(null);
+  var newImgData;
 
-  var imgPixels;
-  let pxs;
+  useEffect(() => {
+    const newImage = new Image();
+    newImage.src = imgData;
+    newImage.onload = () => {
+      setImage(newImage);
+    };
+  }, [mode]);
 
-  // var png = new PNG(imgData); // data is the base64 encoded data
-  // var line;
-  // var y = 0;
-  // while(line = png.readLine())
-  // {
-  //     for (var x = 0; x < line.length; x++){
-  //         var pixel = doSomethingWithPixelData(x, y, '#' + line[x].toString(16).padRight('0', 6));
-  //     }
-  //     y++;
-  // }
+  useEffect(() => {
+    if (image && canvas) {
+      const ctx = canvas.current.getContext("2d");
+      const w = canvas.current.width;
+      const h = canvas.current.height;
+      ctx.drawImage(image, 0, 0); // displays image
 
-  // function doSomethingWithPixelData(x, y, color) {
-  //     // guess what? do something with pixel data here ;)
-  // }
-  let data = new FormData();
+      const imageData = ctx.getImageData(0, 0, w, h);
+      var data = imageData.data;
+
+      const messageLen = message.length;
+      const messBegin = messageLen.toString() + "*";
+      const finalMessageString = messageLen.toString() + "*" + message;
+
+      const bs = textToBinary(finalMessageString); // returns binary string to encode
+      //   console.log("BS is ")
+      //   console.log(bs)
+
+      //   const s1 = "00110010001010100100100001101001" // "2*Hi"
+      //   // check if string is correct
+      //   console.log(s1===bs)
+
+      var bsIndex = 0; // tell us when to stop encoding message
+      //   var checkString = ""; // we dont need this
+      console.log("previous data image array");
+      console.log(data);
+
+      for (var index = 0; index < data.length; index += 4) {
+        // Only encode up to length of binary string
+        if (bsIndex < bs.length) {
+          const num = data[index];
+          const binNum = num.toString(2);
+          const binNumBefore = binNum.slice(0, -1); // get everything but  last bit
+          const newBinNum = binNumBefore + bs[bsIndex]; // string representing binary integer
+          // create new integer from potentially modified lsb
+          const newNum = parseInt(newBinNum, 2);
+
+          data[index] = newNum;
+
+          // checkString+=bs[bsIndex]
+          bsIndex += 1;
+        }
+      }
+      ctx.putImageData(imageData, 0, 0);
+      console.log("after data image array");
+      console.log(data);
+      newImgData = canvas.current.toDataURL("image/png");
+      //   console.log("Binstring and index final")
+      //   console.log(checkString)
+      //   console.log(bsIndex)
+      console.log(newImgData);
+      download(newImgData, "workpls.png");
+    }
+  }, [image, canvas]);
+
   const uploadedFile = e => {
     const f = e.target.files[0];
-    data.append("file", f);
-    // setFile(f);
-    // setFileName(f.name);
-    // const reader = new FileReader();
-    // reader.addEventListener("load", () => {
-    //   setImgData(reader.result);
-    // });
-    // reader.readAsDataURL(f);
+    setFileName(f.name);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImgData(reader.result);
+    });
+    reader.readAsDataURL(f);
   };
   const uploadedMessage = e => {
     setMessage(e.target.value);
@@ -82,89 +144,15 @@ const UploaderTry = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    // let imS = "data:image/png;base64,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";
-    console.log(data);
+    // base64 !!!
+    // var encodedImage = "data:image/png;base64," + almost + "=";
 
-    // sendData(imgData);
-    sendData();
+    // automatically downloads image for you
+    // download(encodedImage, "encodedImage.png");
     setTimeout(function() {
       setMode("End");
     }, 1000);
   };
-
-  function sendData() {
-    //param d : imgData
-
-    // convert array to image
-    // combine first 'half' of array received with last half
-
-    // getPixels(d, function(err, pixels) {
-    //   if (err) {
-    //     console.log("Bad image path");
-    //     return;
-    //   }
-    //   pxs = pixels.data; // ORIGINAL Uint8Arr
-    // setImgUIInt(pxs);
-    // console.log("setImgUINT below")
-    // console.log(imgUInt)
-    // console.log("lizeth");
-    // console.log(pxs);
-    // imgPixels = Array.from(pxs); // Uint8Arr to []
-
-    // set only partial array
-    // let arrThres;
-    // imgPixels.length > 496 ? (arrThres = 496) : (arrThres = imgPixels.length);
-    // let max_arr = imgPixels.slice(0, arrThres);
-
-    let url = "http://localhost:3001/encoded";
-    console.log(file);
-    axios
-      // .post(url, {
-      //   data,
-      //   headers: {
-      //     'accept': 'application/json',
-      //     'Accept-Language': 'en-US,en;q=0.8',
-      //     'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
-      //   }
-      // })
-      .post(url, {
-        body: data,
-        headers: {
-          "Content-Type": "multipart/form-data; ",
-          accept: "application/json",
-          "Accept-Language": "en-US,en;q=0.8"
-        }
-      })
-      .then(response => {
-        //handle success
-        console.log("sent to server");
-        let imArr = response.data.arr;
-        setPrivateKey(response.data.privateKey);
-        console.log("printing pixel");
-        console.log(imArr);
-
-        // let final_imageArr = imArr.concat(
-        //   imgPixels.slice(arrThres, imgPixels.length)
-        // );
-        // console.log(final_imageArr);
-        // console.log("final im arr")
-        // console.log(final_imageArr)
-        // let newIm = new Uint8Array(final_imageArr);
-        // let newIm = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 5, 0, 0, 0, 5, 8, 6, 0, 0, 0, 141, 111, 38, 229, 0, 0, 0, 28, 73, 68, 65, 84, 8, 215, 99, 248, 255, 255, 63, 195, 127, 6, 32, 5, 195, 32, 18, 132, 208, 49, 241, 130, 88, 205, 4, 0, 14, 245, 53, 203, 209, 142, 14, 31, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130]);
-        // setImgUIInt(pxs);
-        // console.log("Img length is ")
-        // console.log(newIm.length)
-        // console.log("IMG UI INT IS ")
-        // console.log(imgUInt)
-        // combine the first and last of our private key
-        // give private key to user
-      })
-      .catch(error => {
-        //handle error
-        alert(error);
-      });
-    // });
-  }
 
   if (mode === "Start") {
     return (
@@ -235,27 +223,8 @@ const UploaderTry = () => {
           message was encoded, it was encrypted with RSA. <br></br>The private
           key pair needed to decrypt the message is: <br></br>
         </Description>
-        <DescriptionLight>
-          {privateKey ? privateKey : ""}
-          {imgData ? imgData : "False"}
-          <div>
-            <a
-              style={{
-                padding: "10px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-              href={URL.createObjectURL(
-                new Blob([{ pxs }.buffer], { type: "image/png" } /* (1) */)
-              )}
-              download
-            >
-              Click here to download the new image
-            </a>
-          </div>
-        </DescriptionLight>
-
+        <DescriptionLight></DescriptionLight>
+        <canvas ref={canvas} width={60} height={60} />
         <br></br>
         <div
           style={{
@@ -278,4 +247,4 @@ const UploaderTry = () => {
   }
 };
 
-export default UploaderTry;
+export default Uploader;

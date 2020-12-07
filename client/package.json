@@ -23,6 +23,7 @@
     "bootstrap": "^4.4.1",
     "browserify": "^17.0.0",
     "downloadjs": "^1.4.7",
+    "form-data": "^3.0.0",
     "get-pixels": "^3.3.2",
     "i": "^0.3.6",
     "jquery-browserify": "^1.8.1",

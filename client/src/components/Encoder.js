@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Button, Collapse } from "reactstrap";
-import Uploader from "./Uploader";
+import UploaderTry from "./UploaderTry";
 
 const Title = styled.h1`
   text-align: center;
@@ -63,7 +63,7 @@ const Encoder = () => {
       </Description>
 
       <div style={{ padding: "1em" }}>
-        <Uploader></Uploader>
+        <UploaderTry></UploaderTry>
       </div>
 
       <div style={{ padding: "20px 0px" }}></div>

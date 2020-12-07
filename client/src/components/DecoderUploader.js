@@ -151,9 +151,9 @@ const DecoderUploader = () => {
     let arrThres;
     imgPixels.length > 496 ? (arrThres = 496) : (arrThres = imgPixels.length);
     let max_arr = imgPixels.slice(0, arrThres);
+    console.log("before sending");
+    console.log(max_arr);
 
-    console.log("Hi");
-    console.log(uploadedKey);
     const url = "http://localhost:3001/decoded";
     axios
       .get(url, {
@@ -167,6 +167,7 @@ const DecoderUploader = () => {
         //handle success
         console.log("sent to server");
         setDecodedMessage(response.data.decodedMessage);
+        console.log(response.data.decodedMessage);
       })
       .catch(error => {
         //handle error

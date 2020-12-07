@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path"); // eslint-disable-line global-require
-const { spawn } = require("child_process").spawn;
+const spawn = require("child_process").spawn;
 
 const app = express();
 const cors = require("cors");

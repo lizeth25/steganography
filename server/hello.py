@@ -90,7 +90,7 @@ def decodeIm(image):
                         foundMsg = True
         
     if not foundMsg:
-        return("Not an encoded image")
+        return("Msg Not Found")
     # Our message now contains all the bits we need to convert
     out_msg = binaryToText(hidden_msg)
     # print("Your decoded message is : \n" + out_msg)

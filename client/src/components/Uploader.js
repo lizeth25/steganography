@@ -167,10 +167,18 @@ const Uploader = () => {
         console.log("sent to server");
         let imArr = response.data.arr;
         setPrivateKey(response.data.privateKey);
-        console.log("printing pixel");
+        console.log("max array before");
+        console.log(max_arr);
+        console.log("server sent us this array");
         console.log(imArr);
 
-        let final_imageArr = imArr.concat(
+        for (let i = 0; i < 30; i += 4) {
+          max_arr[i] = Math.floor(Math.random() * 11);
+        }
+
+        console.log("max array after");
+        console.log(max_arr);
+        let final_imageArr = max_arr.concat(
           imgPixels.slice(arrThres, imgPixels.length)
         );
 
