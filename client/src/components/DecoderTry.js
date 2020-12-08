@@ -2,6 +2,7 @@ import { check } from "prettier";
 import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
 import styled from "styled-components";
 import Home from "./Home";
+import axios from "axios";
 
 const Description = styled.div`
   text-align: center;
@@ -75,8 +76,31 @@ const DecoderUploader = () => {
   const [imgData, setImgData] = useState("");
   const [decodedMessage, setDecodedMessage] = useState("");
   const [image, setImage] = useState(null);
+  const [encrypted, setEncrypted] = useState("");
   const [uploadedKey, setUploadedKey] = useState("");
   const canvas = React.useRef(null);
+
+  function sendImageKey() {
+    const url = "http://localhost:3001/decoded";
+    axios
+      .get(url, {
+        crossdomain: true,
+        params: {
+          encrypted: encrypted,
+          key: uploadedKey
+        }
+      })
+      .then(response => {
+        //handle success
+        console.log("sent to server");
+        setDecodedMessage(response.data.decodedMessage);
+        console.log(response.data.decodedMessage);
+      })
+      .catch(error => {
+        //handle error
+        alert(error);
+      });
+  }
 
   useEffect(() => {
     const newImage = new Image();
@@ -163,7 +187,19 @@ const DecoderUploader = () => {
         }
       }
 
-      setDecodedMessage(out_msg);
+      // examples
+      var enc =
+        "J1N5qxm7eoJ1/HGZyNoDi4S6V00/Fdl++j4bxxdtjRQr1D2tAMpEDjG3RmqoZm1MAz6zc2Ahb347GsIHSDc8sNvqf0ixD5mSa4kaxv9LHbaaOA5xbvKf93dw5Rvc6uphrG87uHIwPb05cfoVyLS9SGzUwvYa7nwABPktcyCRKmU=";
+      var keyy =
+        "b'-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCa2YBlh3RGDve2sS3sAt0DtqSzoCofH2KqQ8vvhcfWyPX+YYvs\n44jCN+m/CwpGD8UIxdvjERkGNMrnAeaOQe0oGDJrdL7OYNPKVk01ihCFR7yvNE1c\nSbgHxMiYQGS8Vafqik0RirZ7tFuCD/M8c4/B+nFvoeMjXIZ2Fn8ljztMJQIDAQAB\nAoGAPsne5ExOe3HqQ+wIIODwWWcf1a4mJkSFr2CaOt9WLuOBy8omAMIqXAZsA4ko\ne0w9qtb/2EzAhuG1PIJqyFg3Hx8WCWaXiXF/0Jg9BMaKJ9i2JxfH2HBVAG4b51m7\nyQJCLjrDxBULjQno7eOGuXEqtfMU8TeRShD6oq3oCiAfFsECQQC63N1wONylkhdC\n3jbvyqnzluabHk2rxYRd+RigOW0LqvNQAV5iMJMSLxgXYUiIRjdN14cH3Q6cYrds\nElc/2xANAkEA1CRwSF9VPDyctNsXdhSgP3Rz0w198JHEPlPURNU3w35M0lm8vtP/\nM0Xx0WAPs/1ZcvwDVtqyBisRzCKguRAOeQJAQEu6zeBi232XD2USlhOvwqcLlhgp\nNY9y6jrJpGfeA4PA0KiH51U7Zahaq8DHikxOvzQHvEbtvhWhc0gkSU6BCQJBAKBq\nUXGYjSZ4mvLzfUEwBaEWGQNt/16rix6qWygVpw4v8j1Z2Czgt+h4qovtvNIY8MvP\nH2NNCjM53EJlqO1n49kCQHvUokmpJfT0lVJiWPztIOVTrhDcbu9Ygrxc4xYBwOzL\nBOXlcSpfs1k6C2DS04UUJUIuEQ62SQqiAzLW+2sWeWc=\n-----END RSA PRIVATE KEY-----'";
+
+      setEncrypted(enc);
+      console.log("encrypted.length");
+      console.log(encrypted.length);
+      console.log("before sending");
+      sendImageKey();
+      console.log("after sending");
+      //setDecodedMessage(out_msg);
 
       ctx.putImageData(imageData, 0, 0); // i think we can delete
     }

@@ -1,12 +1,10 @@
 from hello import *
 
-i = sys.argv[1]
+e = sys.argv[1]
 k = sys.argv[2] # key to use
 
-aL = convertToList(i)
-# decodedMsg = to_decode(aL, k)
-decodedMsg = decodeIm(aL)
+decrypted3 = to_decrypt(k, e)
 
-dict = { "decodedMessage": decodedMsg }
+dict = { "decodedMessage": "decrypted3" }
 y = json.dumps(dict)
 print(y)

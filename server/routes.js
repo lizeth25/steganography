@@ -45,9 +45,9 @@ app.get("/encoded", (req, res) => {
 });
 
 app.get("/decoded", (req, res) => {
-  const ima = req.query.imsrc; // partial array of the image uploaded
   const pKey = req.query.pkey;
-  const nextProcessD = spawn("python3", ["./imagedecoder.py", ima, pKey]);
+  const eNcrypted = req.query.encrypted;
+  const nextProcessD = spawn("python3", ["./imagedecoder.py", eNcrypted, pKey]);
   nextProcessD.stdout.on("data", data => {
     res.send(JSON.parse(data));
   });
