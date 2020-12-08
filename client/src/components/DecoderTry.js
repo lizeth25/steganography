@@ -28,16 +28,6 @@ const DescriptionLight = styled.div`
 
 var download = require("downloadjs");
 
-function textToBinary(t) {
-  var out = "";
-  for (var i = 0; i < t.length; i++) {
-    var b = t[i].charCodeAt().toString(2);
-    b = new Array(9 - b.length).join("0") + b;
-    out += b;
-  }
-  return out;
-}
-
 // from
 // https://stackoverflow.com/questions/21354235/converting-binary-to-text-using-javascript
 function binaryToText(b) {
@@ -84,7 +74,7 @@ const DecoderUploader = () => {
     const url = "http://localhost:3001/decoded";
     console.log("being sent to server, hopefully");
     const correct =
-      "feH4KJMFqBjQzw9jDxrVRzoTqsruNX7jejBBLg9PiNEDzJP63visSsRUlOpqLNmPoeHAPa7owHVnKf9PU2vwCPneKVe4kG9cnWN4TydYVuPtPxRmcFjU2RdicEDHqRzq+0zJX2zqpZEoNjgsmM8mEFggngHMgDHrcibnkLaeB0I=";
+      "nVSH+GSmK6r+BB4r0onZ5LVrdTDKKUisUAq1UeItJ81D2b6mHmZP1cxQc/PNrm7vSV+B+5bXuZL6cRdX52YgTX5LPDQ5SkpYPj3p8eYYD7Z9zn9pTsIYyGUhdE7g9VeiGJCIOrh+jzb2xyBx8ROwS6SXTkkYhkEypBw1R8WCo2Y=";
     console.log(correct === encrypted);
     console.log(encrypted);
     console.log(uploadedKey);
@@ -121,6 +111,7 @@ const DecoderUploader = () => {
       const ctx = canvas.current.getContext("2d");
       const w = canvas.current.width;
       const h = canvas.current.height;
+      console.log(w, h);
       ctx.drawImage(image, 0, 0); // displays image
 
       const imageData = ctx.getImageData(0, 0, w, h);
@@ -199,7 +190,7 @@ const DecoderUploader = () => {
 
       // examples
       var corr =
-        "feH4KJMFqBjQzw9jDxrVRzoTqsruNX7jejBBLg9PiNEDzJP63visSsRUlOpqLNmPoeHAPa7owHVnKf9PU2vwCPneKVe4kG9cnWN4TydYVuPtPxRmcFjU2RdicEDHqRzq+0zJX2zqpZEoNjgsmM8mEFggngHMgDHrcibnkLaeB0I=";
+        "nVSH+GSmK6r+BB4r0onZ5LVrdTDKKUisUAq1UeItJ81D2b6mHmZP1cxQc/PNrm7vSV+B+5bXuZL6cRdX52YgTX5LPDQ5SkpYPj3p8eYYD7Z9zn9pTsIYyGUhdE7g9VeiGJCIOrh+jzb2xyBx8ROwS6SXTkkYhkEypBw1R8WCo2Y=";
       var keyy =
         "b'-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCa2YBlh3RGDve2sS3sAt0DtqSzoCofH2KqQ8vvhcfWyPX+YYvs\n44jCN+m/CwpGD8UIxdvjERkGNMrnAeaOQe0oGDJrdL7OYNPKVk01ihCFR7yvNE1c\nSbgHxMiYQGS8Vafqik0RirZ7tFuCD/M8c4/B+nFvoeMjXIZ2Fn8ljztMJQIDAQAB\nAoGAPsne5ExOe3HqQ+wIIODwWWcf1a4mJkSFr2CaOt9WLuOBy8omAMIqXAZsA4ko\ne0w9qtb/2EzAhuG1PIJqyFg3Hx8WCWaXiXF/0Jg9BMaKJ9i2JxfH2HBVAG4b51m7\nyQJCLjrDxBULjQno7eOGuXEqtfMU8TeRShD6oq3oCiAfFsECQQC63N1wONylkhdC\n3jbvyqnzluabHk2rxYRd+RigOW0LqvNQAV5iMJMSLxgXYUiIRjdN14cH3Q6cYrds\nElc/2xANAkEA1CRwSF9VPDyctNsXdhSgP3Rz0w198JHEPlPURNU3w35M0lm8vtP/\nM0Xx0WAPs/1ZcvwDVtqyBisRzCKguRAOeQJAQEu6zeBi232XD2USlhOvwqcLlhgp\nNY9y6jrJpGfeA4PA0KiH51U7Zahaq8DHikxOvzQHvEbtvhWhc0gkSU6BCQJBAKBq\nUXGYjSZ4mvLzfUEwBaEWGQNt/16rix6qWygVpw4v8j1Z2Czgt+h4qovtvNIY8MvP\nH2NNCjM53EJlqO1n49kCQHvUokmpJfT0lVJiWPztIOVTrhDcbu9Ygrxc4xYBwOzL\nBOXlcSpfs1k6C2DS04UUJUIuEQ62SQqiAzLW+2sWeWc=\n-----END RSA PRIVATE KEY-----'";
 
@@ -214,7 +205,10 @@ const DecoderUploader = () => {
   }, [image, canvas]);
 
   const uploadedKeyInput = e => {
-    setUploadedKey(e.target.value);
+    const pk =
+      "-----BEGIN RSA PRIVATE KEY-----MIICWwIBAAKBgQCtF/UjdBQty6fyBTKxyHP7y4+ivSnc4mvPmJAtsVnze3UwS5EGtwGCZXXofeK6u9UhuZgBS3JN2AgieNShlstNVip8l3EycxPzCP0hpbwdcvpK0UtZ72G59nwD/OahkGS4JST8jS/pIsSXoovBmqpGkOXOGaOIf3lt/wsmFXEsyQIDAQABAoGAE4oOzA/Ab2L79GAN1u/P1+6kqjQ8U4jjrq2EKQRKKSgYlHkTR/TEoNmfM71yKK4nYwU2WX8QyiTG1k1Zg1woWsUCO6lKJ62f9tZGMrMi9O8XFfys4s937i3UfygC/dXXzq7WSeerOd9ZdwVenRyMLY7FaAHW9bbSflSJhM5dohkCQQDMziS5CZpieIP98431QghQVcfAlqBfpxS6wDf3Rna5gelbNq3e4aU1e5dKqo1B9suJX+SFhbdUSoJH7oDOKFKrAkEA2FyHFcb/ic10gJX3TXPIPmTxHTPO7zXZAlY8HwUT5xfNhU/vGzMm1vQ1d1APEoyDTS6dRLOZL+HaPT31FENeWwJAKYG1y5J4qXBHP9Z2dLg3OyDHZO6h/gC8oMSIEyNCuIHtq0C/qCYO93HezZEXI8FCqsq2Y6Ef8INROAbML/vYFQJATe29xg0/+y1iOfJJ+b6rMDYBVmhTr3swp5PR4cZdbc33+31X/O8GnUOmgkv2sdKkdEdG4/jgQwvRJF/NhzfgowJAOYWSyK0cAnEdDG5jfOCE4ptchWu80mNCIlJcI7RJkWd8OyqXXzNEMO+KveNmfVzObdpQTqQkC6NTOIbCikWHAA==-----END RSA PRIVATE KEY-----";
+    // setUploadedKey(e.target.value);
+    setUploadedKey(pk);
   };
 
   const uploadedFileToDecode = e => {

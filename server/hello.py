@@ -121,27 +121,23 @@ def decrypt(privatekey, b64cipher):
 
 def to_encrypt(message):
     privatekey, publickey = makeRSAkeys()
-
     encodedmsg = message.encode()
-
     encrypted = encrypt(publickey, encodedmsg)
-
     encrypted2 = str(encrypted).strip('b')
     encrypted3 = str(encrypted2).strip("'")
-
     export_privatekey = privatekey.exportKey()
-    string_privatekey = str(export_privatekey)
-    return (encrypted3, string_privatekey)
-
+    pk = export_privatekey.decode()
+    pk2 = str(pk) # not necessary i think    
+    return (encrypted3, pk2)
 
 def to_decrypt(string_privatekey, encrypted):
-    privatekey = RSA.importKey(string_privatekey)
+    tryKey = string_privatekey.encode()
+    privatekey = RSA.importKey(tryKey)
+    return(str(privatekey))
     decrypted = str(decrypt(privatekey, encrypted))
-
     decrypted2 = decrypted.strip('b')
     decrypted3 = decrypted2.strip("'")
-
-    return(decrypted3)
+    return(tryKey)
 
 def to_encode(message, image):
     encrypted, string_privatekey = to_encrypt(message)
