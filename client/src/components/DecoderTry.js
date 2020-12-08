@@ -1,7 +1,7 @@
 import { check } from "prettier";
 import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
 import styled from "styled-components";
-import axios from "axios";
+import Home from "./Home";
 
 const Description = styled.div`
   text-align: center;
@@ -37,9 +37,21 @@ function textToBinary(t) {
   return out;
 }
 
+// from
+// https://stackoverflow.com/questions/21354235/converting-binary-to-text-using-javascript
+function binaryToText(b) {
+  return b.replace(/[01]{8}/g, function(v) {
+    return String.fromCharCode(parseInt(v, 2));
+  });
+}
+
+/*
+DONE
+add 'here is your original image' and 'upload only png'
+*/
+
 /*
 TO DO
-add 'here is your original image' and 'upload only png'
 fix 'encode another image'
 decoder
 set canvas width and height
@@ -55,41 +67,16 @@ video potentially
 textToBinary will not work with special characters like those who have more than 8bits
 */
 
-const Uploader = () => {
-  const [fileName, setFileName] = useState("Choose Image or Video");
+const DecoderUploader = () => {
+  const [fileNameToDecode, setFileNameToDecode] = useState(
+    "Choose Image or Video"
+  );
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
   const [imgData, setImgData] = useState("");
-  const [message, setMessage] = useState("");
+  const [decodedMessage, setDecodedMessage] = useState("");
   const [image, setImage] = useState(null);
-  const [privateKey, setPrivateKey] = useState("");
+  const [uploadedKey, setUploadedKey] = useState("");
   const canvas = React.useRef(null);
-  var newImgData;
-  var imgWidth;
-  var imgHeight;
-
-  function sendMessage() {
-    let url = "http://localhost:3001/encoded";
-    axios
-      .get(url, {
-        crossdomain: true,
-        params: {
-          msg: message
-        }
-      })
-      .then(response => {
-        //handle success
-        console.log("sent to server");
-
-        setPrivateKey(response.data.privateKey);
-
-        // combine the first and last of our private key
-        // give private key to user
-      })
-      .catch(error => {
-        //handle error
-        alert(error);
-      });
-  }
 
   useEffect(() => {
     const newImage = new Image();
@@ -102,59 +89,98 @@ const Uploader = () => {
   useEffect(() => {
     if (image && canvas) {
       const ctx = canvas.current.getContext("2d");
-      // imgWidth = canvas.current.width;
-      // imgHeight = canvas.current.height;
-      // imgWidth = image.width;
-      // imgHeight = image.height;
       const w = canvas.current.width;
       const h = canvas.current.height;
       ctx.drawImage(image, 0, 0); // displays image
 
       const imageData = ctx.getImageData(0, 0, w, h);
       var data = imageData.data;
+      // for Decoder
 
-      const messageLen = message.length;
-      const messBegin = messageLen.toString() + "*";
-      const finalMessageString = messageLen.toString() + "*" + message;
+      // using * as signal to denote when the length of the message is done being encoded into message
+      const signal = "00101010"; // represents the first *
+      var len_str = ""; // bin string w/ length
+      var msg_len = ""; // bin String converted
+      var hidden_msg = ""; // encoded bin str
+      var foundLen = false;
+      var foundMsg = false;
+      var index = 0;
+      var out_msg = "";
 
-      const bs = textToBinary(finalMessageString); // returns binary string to encode
+      // we can use len_str to add 8 bin chars which we will convert to a number unless it is our signal
+      // always check last 8 chars for signal. when found turn len_str[:-8] into integer
+      // Then we keep and index and for every set of 8 bin numbers we have one character we add to our message
 
-      var bsIndex = 0; // tell us when to stop encoding message
-
-      for (var index = 0; index < data.length; index += 4) {
-        // Only encode up to length of binary string
-        if (bsIndex < bs.length) {
-          const num = data[index];
+      // calculate length of the message by adding appropriate bin value to len_str until * tells us when to stop adding
+      decode: for (var i = 0; i < data.length; i += 4) {
+        // if (i % 4 != 3) {
+        if (!foundMsg) {
+          const num = data[i];
           const binNum = num.toString(2);
-          const binNumBefore = binNum.slice(0, -1); // get everything but last bit
-          const newBinNum = binNumBefore + bs[bsIndex]; // string representing binary integer
-          // create new integer from potentially modified lsb
-          const newNum = parseInt(newBinNum, 2);
+          const least_bit = binNum.slice(-1);
+          if (!foundLen) {
+            if (len_str != "" && len_str.length % 8 == 0) {
+              const last_eight = len_str.slice(-8);
+              // we can check last 8 bits added and convert to a character
+              if (last_eight == signal) {
+                foundLen = true;
+                try {
+                  msg_len = parseInt(msg_len, 10); // length of out bit message
+                } catch {
+                  out_msg = "Not an encoded image";
+                  break decode;
+                }
+                hidden_msg += least_bit;
+              }
+              // if not the signal, convert the eight bits to a character
+              else {
+                msg_len += binaryToText(last_eight);
+                len_str += least_bit; // check this
+              }
+            } else {
+              // we are adding the least significant value to our len_str until we find signal
+              len_str += least_bit;
+            }
+          }
 
-          data[index] = newNum;
-
-          bsIndex += 1;
+          // length has been found we now are ready to add our binary numbers to our msg string and then convert
+          else {
+            if (index < msg_len * 8) {
+              hidden_msg += least_bit;
+              index += 1;
+            } else {
+              foundMsg = true;
+            }
+          }
+        }
+        //}
+        if (!foundMsg) {
+          out_msg = "Msg Not Found";
+        } else {
+          // Our message now contains all the bits we need to convert
+          out_msg = binaryToText(hidden_msg);
+          out_msg = out_msg.slice(0, -1);
         }
       }
-      ctx.putImageData(imageData, 0, 0);
 
-      newImgData = canvas.current.toDataURL("image/png");
+      setDecodedMessage(out_msg);
 
-      download(newImgData, "encoded.png");
+      ctx.putImageData(imageData, 0, 0); // i think we can delete
     }
   }, [image, canvas]);
 
-  const uploadedFile = e => {
+  const uploadedKeyInput = e => {
+    setUploadedKey(e.target.value);
+  };
+
+  const uploadedFileToDecode = e => {
     const f = e.target.files[0];
-    setFileName(f.name);
+    setFileNameToDecode(f.name);
     const reader = new FileReader();
     reader.addEventListener("load", () => {
       setImgData(reader.result);
     });
     reader.readAsDataURL(f);
-  };
-  const uploadedMessage = e => {
-    setMessage(e.target.value);
   };
 
   const onSubmit = e => {
@@ -169,30 +195,29 @@ const Uploader = () => {
       <Fragment>
         <form onSubmit={onSubmit}>
           <div
-            className=" mb-4"
+            className="mb-4"
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center"
             }}
           >
-            <label htmlFor="customText" style={{ padding: "0px 10px 0px 0px" }}>
-              Message to encode:
+            <label htmlFor="customKey" style={{ padding: "0px 10px 0px 0px" }}>
+              Encryption Key:
             </label>
             <input
+              type="text"
+              id="customKey"
               style={{
                 borderWidth: "thin",
                 borderColor: "#cdd3d8",
                 borderRadius: "2.5px"
               }}
-              type="text"
-              id="customText"
-              placeholder="Message"
-              maxLength="46"
-              onChange={uploadedMessage}
+              placeholder="Key"
+              onChange={uploadedKeyInput}
+              maxLength="893"
             />
           </div>
-
           <div
             style={{ left: "26%", width: "50%" }}
             className="custom-file mb-4"
@@ -201,10 +226,10 @@ const Uploader = () => {
               type="file"
               className="custom-file-input"
               id="customFile"
-              onChange={uploadedFile}
+              onChange={uploadedFileToDecode}
             />
             <label className="custom-file-label sm-4" htmlFor="customFile">
-              {fileName}
+              {fileNameToDecode}
             </label>
           </div>
           <div
@@ -218,24 +243,25 @@ const Uploader = () => {
             <input
               style={{ background: "#00DE66", border: "0px" }}
               type="submit"
-              value="Encode"
+              value="Decode"
               className="btn"
             />
           </div>
         </form>
       </Fragment>
     );
-  } else {
+  } else if (mode === "End") {
     return (
       <div>
         <Description>
-          Your message has been successfully encoded into your image! Before the
-          message was encoded, it was encrypted with RSA. <br></br>The private
-          key pair needed to decrypt the message is: <br></br>
+          Your message has been successfully decoded! <br></br>
+          <br></br>
         </Description>
-        <DescriptionLight></DescriptionLight>
+        <DescriptionLight>
+          {decodedMessage ? decodedMessage : ""}
+        </DescriptionLight>
         <Description>
-          This is the original, nonencoded image you uploaded! <br></br>
+          This is the encoded image you uploaded! <br></br>
           <br></br>
         </Description>
         <div
@@ -260,7 +286,7 @@ const Uploader = () => {
           <input
             style={{ background: "#00DE66", border: "0px" }}
             type="button"
-            value="Encode Another Image"
+            value="Decode Another Image"
             className="btn"
             onClick={() => setMode("Start")}
           ></input>
@@ -270,4 +296,4 @@ const Uploader = () => {
   }
 };
 
-export default Uploader;
+export default DecoderUploader;

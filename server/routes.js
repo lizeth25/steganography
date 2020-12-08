@@ -34,11 +34,11 @@ app.use((req, res, next) => {
 });
 
 app.get("/encoded", (req, res) => {
-  const ima = req.query.imsrc; // partial array of the image uploaded
+  // const ima = req.query.imsrc; // partial array of the image uploaded
   const msgToEncode = req.query.msg;
   // exceptions
   // use python script then send to server
-  const nextProcess = spawn("python3", ["./imageencoder.py", ima, msgToEncode]);
+  const nextProcess = spawn("python3", ["./imageencoder.py", msgToEncode]);
   nextProcess.stdout.on("data", data => {
     res.send(JSON.parse(data));
   });

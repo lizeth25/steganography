@@ -58,8 +58,8 @@ const Encoder = () => {
 
       <Title> Instructions </Title>
       <Description>
-        Upload a photo or video of your choice, as well as the message you wish
-        to encode in the file.
+        Upload a png photo or video of your choice, as well as the message you
+        wish to encode in the file.
       </Description>
 
       <div style={{ padding: "1em" }}>
