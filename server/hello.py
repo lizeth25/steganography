@@ -127,17 +127,39 @@ def to_encrypt(message):
     encrypted3 = str(encrypted2).strip("'")
     export_privatekey = privatekey.exportKey()
     pk = export_privatekey.decode()
-    pk2 = str(pk) # not necessary i think    
-    return (encrypted3, pk2)
+    #pk2 = str(pk) # not necessary i think
+    #arr = []
+    #for i in pk:
+    #    arr.append(i)
+    return (encrypted3, pk)
 
 def to_decrypt(string_privatekey, encrypted):
-    tryKey = string_privatekey.encode()
-    privatekey = RSA.importKey(tryKey)
-    return(str(privatekey))
+    #tryKey = string_privatekey.encode()
+
+    privatekey = RSA.importKey(string_privatekey)
     decrypted = str(decrypt(privatekey, encrypted))
     decrypted2 = decrypted.strip('b')
     decrypted3 = decrypted2.strip("'")
-    return(tryKey)
+    return(decrypted3)
+
+#print("lets begin")
+#encrypted3, pk2 = to_encrypt("hello")
+
+#print(len(arr))
+#print(len(pk2))
+# pk2 normally 890 or 886
+
+#something = ""
+#for j in arr:
+#    something += j
+#print(something)
+
+
+
+#yes = "hE/R+Ftwxv2UAt+ay+6BMyTK5kBxb2SL+c9sXKsWaRrQ0lQ1R3zpfkMOK6lMXajlEitFyJ0TO4lie1W9DyeX0gBbFaX0BnpUTTY6BA/tfuSfF5i5/WEq4f6yufFS9CXpMTVwZ1TPAAfj2kgJNb8kji1J/6dsYBAJuWz1NkPbUqI="
+
+#decrypted3 = to_decrypt(pubkey2, yes)
+#print(decrypted3)
 
 def to_encode(message, image):
     encrypted, string_privatekey = to_encrypt(message)

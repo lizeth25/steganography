@@ -80,7 +80,9 @@ const Uploader = () => {
       .then(response => {
         //handle success
         console.log("sent to server");
+        console.log("privateKey");
         console.log(response.data.privateKey);
+        console.log("encrypted");
         console.log(response.data.encrypted);
         setPrivateKey(response.data.privateKey);
         setEncrypted(response.data.encrypted);
@@ -113,9 +115,8 @@ const Uploader = () => {
       const h = canvas.current.height;
       ctx.drawImage(image, 0, 0); // displays image
 
-      console.log(encrypted);
+      console.log("encrypted.length");
       console.log(encrypted.length);
-      console.log("^ encry");
 
       const imageData = ctx.getImageData(0, 0, w, h);
       var data = imageData.data;
@@ -167,7 +168,7 @@ const Uploader = () => {
     sendMessage();
     setTimeout(function() {
       setMode("End");
-    }, 1000);
+    }, 2000);
   };
 
   if (mode === "Start") {
