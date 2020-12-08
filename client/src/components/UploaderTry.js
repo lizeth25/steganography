@@ -39,20 +39,9 @@ function textToBinary(t) {
 
 /*
 TO DO
-add 'here is your original image' and 'upload only png'
-fix 'encode another image'
-decoder
 set canvas width and height
-updating our server to only receive message, and send back encrypted3 and private key
-useEffect?
 png vs jpeg download
-
-go/csmajorss
-based on new changes we can update our max message length
-
-video potentially
-
-textToBinary will not work with special characters like those who have more than 8bits
+video
 */
 
 const Uploader = () => {
@@ -65,8 +54,8 @@ const Uploader = () => {
   const [encrypted, setEncrypted] = useState("");
   const canvas = React.useRef(null);
   var newImgData;
-  var imgWidth;
-  var imgHeight;
+  var imgWidth = 60;
+  var imgHeight = 60;
 
   function sendMessage() {
     let url = "http://localhost:3001/encoded";
@@ -79,9 +68,6 @@ const Uploader = () => {
       })
       .then(response => {
         //handle success
-        console.log("sent to server");
-        console.log(response.data.privateKey);
-        console.log(response.data.encrypted);
         setPrivateKey(response.data.privateKey);
         setEncrypted(response.data.encrypted);
         // combine the first and last of our private key
@@ -96,6 +82,7 @@ const Uploader = () => {
   useEffect(() => {
     const newImage = new Image();
     newImage.src = imgData;
+
     newImage.onload = () => {
       setImage(newImage);
     };
@@ -105,10 +92,6 @@ const Uploader = () => {
     if (image && canvas) {
       // sendMessage();
       const ctx = canvas.current.getContext("2d");
-      // imgWidth = canvas.current.width;
-      // imgHeight = canvas.current.height;
-      // imgWidth = image.width;
-      // imgHeight = image.height;
       const w = canvas.current.width;
       const h = canvas.current.height;
       ctx.drawImage(image, 0, 0); // displays image
@@ -122,7 +105,7 @@ const Uploader = () => {
       var arrIndex = [];
       var st = "";
       var bsIndex = 0; // tell us when to stop encoding message
-      for (var index = 0; index < data.length; index += 4) {
+      for (var index = 0; index < data.length; index += 2) {
         // Only encode up to length of binary string
         if (bsIndex < bs.length) {
           const num = data[index];
@@ -140,9 +123,6 @@ const Uploader = () => {
       }
       ctx.putImageData(imageData, 0, 0);
       newImgData = canvas.current.toDataURL("image/png");
-      console.log(arrIndex);
-      console.log(data);
-      console.log(st);
 
       download(newImgData, "encoded.png");
     }
@@ -165,11 +145,8 @@ const Uploader = () => {
     e.preventDefault();
     sendMessage();
     setTimeout(function() {
-      console.log("beforemode");
       setMode("End");
-      console.log("aftermode");
     }, 2000);
-    console.log("aftertimeour");
   };
 
   if (mode === "Start") {
@@ -254,7 +231,7 @@ const Uploader = () => {
             justifyContent: "center"
           }}
         >
-          <canvas ref={canvas} />
+          <canvas ref={canvas} width={60} height={60} />
         </div>
         <br></br>
         <div
