@@ -41,6 +41,9 @@ const Uploader = () => {
   const [imgData, setImgData] = useState("");
   const [message, setMessage] = useState("");
 
+  //   function getPixel(imgData, index) {
+  //   return imgData.data.subarray(index*4, index*4+4) // Uint8ClampedArray(4) [R,G,B,A]
+  // }
   // taken from
   // https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
   function _arrayBufferToBase64(buffer) {
@@ -161,8 +164,8 @@ const Uploader = () => {
     imgPixels.length > 496 ? (arrThres = 496) : (arrThres = imgPixels.length);
     let max_arr = imgPixels.slice(0, arrThres);
 
-    console.log("max_arr");
-    console.log(max_arr);
+    // console.log("first max_arr");
+    // console.log(max_arr);
 
     let url = "http://localhost:3001/encoded";
     axios
@@ -178,10 +181,99 @@ const Uploader = () => {
         console.log("sent to server");
         let imArr = response.data.arr;
         setPrivateKey(response.data.privateKey);
-        console.log("imArr");
-        console.log(imArr);
+        // console.log("imArr");
+        // console.log(imArr);
 
-        let final_imageArr = imArr.concat(
+        // lets try a, frog
+        // max_arr[0] = 116
+        // max_arr[1] = 170
+        // max_arr[2] = 91
+        // max_arr[4] = 103
+        // max_arr[6] = 122
+        // max_arr[8] = 102
+        // max_arr[12] = 122
+        // max_arr[13] = 175
+
+        // doesnt work for a, frog
+        // max_arr[17] = 144
+
+        // why is j showing as message?
+        // why is encoding for a and d the same
+
+        // this works
+        // max_arr[0] = 255
+        // max_arr[1] = 255
+        // max_arr[2] = 255
+        // max_arr[3] = 255
+        // max_arr[4] = 255
+        // max_arr[5] = 255
+        // max_arr[6] = 255
+        // max_arr[7] = 255
+        // max_arr[8] = 255
+        // max_arr[9] = 255
+        // max_arr[10] = 255
+        // max_arr[11] = 255
+        // max_arr[12] = 255
+        // max_arr[13] = 255
+
+        // for d scream
+        // max_arr[0] = 116
+        // max_arr[1] = 170
+        // max_arr[2] = 91
+        // max_arr[4] = 103
+        // max_arr[6] = 122
+        // max_arr[8] = 102
+        // max_arr[12] = 122
+        // max_arr[13] = 175
+
+        // cant change past 14
+        // max_arr[14] = 175
+        // need to change d scream
+        // max_arr[17] = 144
+
+        // for dd frog
+        // max_arr[0] = 116
+        // max_arr[1] = 170
+        // max_arr[2] = 91
+        // max_arr[4] = 103
+        // max_arr[6] = 122
+        // max_arr[9] = 128
+        // max_arr[12] = 122
+        // max_arr[13] = 175
+
+        // need to change these for dd too
+        // but cant change past 14
+        // max_arr[17] = 144
+        // max_arr[22] = 129
+
+        // for d frog
+        // they work
+        // max_arr[0] = 116
+        // max_arr[1] = 170
+        // max_arr[2] = 91
+        // max_arr[4] = 103
+        // max_arr[6] = 122
+        // max_arr[8] = 102
+        // max_arr[12] = 122
+        // max_arr[13] = 175
+
+        // what about these --> they work
+        // max_arr[5] = 75
+        // max_arr[7] = 75
+        // max_arr[9] = 75
+        // max_arr[10] = 75
+        // max_arr[11] = 75
+
+        // doesnt work for d
+        // max_arr[17] = 144
+        // max_arr[22] = 129
+        // max_arr[24] = 1
+        // max_arr[25] = 2
+
+        // console.log("final max_arr");
+        // console.log(max_arr);
+
+        let final_imageArr = max_arr.concat(
           imgPixels.slice(arrThres, imgPixels.length)
         );
 
@@ -204,15 +296,39 @@ const Uploader = () => {
         // base64 !!!
         var encodedImage = "data:image/png;base64," + almost + "=";
 
+        //console.log(encodedImage)
         // canvas ?
-        var c = document.createElement("canvas");
-        var customFile = document.getElementById("customFile");
-        c.height = customFile.height;
-        c.width = customFile.width;
-        var ctx = c.getContext("2d");
+        // var c = document.createElement('canvas');
+        // var customFile = document.getElementById('customFile');
+        // c.height = customFile.height;
+        // c.width = customFile.width;
+        // var ctx = c.getContext('2d');
+        //
+        // ctx.drawImage(customFile, 0, 0, c.width, c.height);
+        // var base64String = c.toDataURL();
 
-        ctx.drawImage(customFile, 0, 0, c.width, c.height);
-        var base64String = c.toDataURL();
+        // canvas attempt 2
+
+        // var cvs = document.createElement('canvas');
+        // document.body.appendChild(cvs);
+        // var customFile = new Image();
+        // customFile.src = d;
+        //
+        // cvs.width = customFile.width;
+        // cvs.height = customFile.height;
+        // var ctx = cvs.getContext("2d");
+        // ctx.drawImage(customFile, 0, 0, cvs.width, cvs.height);
+        // var base64String = cvs.toDataURL();
+        // console.log("customFile");
+        // console.log(customFile);
+
+        //var idt = ctx.getImageData(0, 0, cvs.width, cvs.height);
+
+        // console.log("d");
+        // console.log(d);
+        // var ans = getPixel(d.data, 5);
+        // console.log("ans");
+        // console.log(ans);
 
         //string imageBase64 = Convert.ToBase64String(item.ImageData);
 
@@ -225,7 +341,7 @@ const Uploader = () => {
         // console.log(encodedImage2);
 
         // automatically downloads image for you
-        download(encodedImage, "encodedImage.png");
+        //download(encodedImage, "encodedImage.png");
 
         // combine the first and last of our private key
         // give private key to user
@@ -307,7 +423,6 @@ const Uploader = () => {
         </Description>
         <DescriptionLight>
           {privateKey ? privateKey : ""}
-          {imgData ? imgData : "False"}
           <div></div>
         </DescriptionLight>
 

@@ -47,7 +47,6 @@ app.get("/encoded", (req, res) => {
     msgToEncode
   ]);
   next_process.stdout.on("data", data => {
-    console.log("out of thin");
     res.send(JSON.parse(data));
   });
 });
