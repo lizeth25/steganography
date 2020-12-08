@@ -131,11 +131,9 @@ def to_encrypt(message):
 
     export_privatekey = privatekey.exportKey()
     pk = export_privatekey.decode()
-    #export_privatekey2 = str(export_privatekey).strip('b')
-    #export_privatekey3 = str(export_privatekey2).strip("'")
+    pk2 = str(pk) # not necessary i think
 
-    #string_privatekey = str(export_privatekey)
-    return (pk, encrypted3)
+    return (encrypted3, pk2)
 
 def to_decrypt(string_privatekey, encrypted):
     tryKey = string_privatekey.encode()
@@ -147,16 +145,6 @@ def to_decrypt(string_privatekey, encrypted):
     decrypted3 = decrypted2.strip("'")
 
     return(decrypted3)
-
-pk, encrypted3 = to_encrypt("hello")
-pkstring = str(pk)
-
-
-decrypted3 = to_decrypt(pkstring, encrypted3)
-print(decrypted3)
-
-
-# check type
 
 def to_encode(message, image):
     encrypted, string_privatekey = to_encrypt(message)
