@@ -46,7 +46,8 @@ app.get("/encoded", (req, res) => {
 
 app.get("/decoded", (req, res) => {
   const pKey = req.query.pkey;
-  const eNcrypted = req.query.encrypted;
+  const eNcrypted = req.query.encryptedK;
+  console.log(req.query);
   const nextProcessD = spawn("python3", ["./imagedecoder.py", eNcrypted, pKey]);
   nextProcessD.stdout.on("data", data => {
     res.send(JSON.parse(data));

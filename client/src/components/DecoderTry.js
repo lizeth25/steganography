@@ -82,12 +82,18 @@ const DecoderUploader = () => {
 
   function sendImageKey() {
     const url = "http://localhost:3001/decoded";
+    console.log("being sent to server, hopefully");
+    const correct =
+      "feH4KJMFqBjQzw9jDxrVRzoTqsruNX7jejBBLg9PiNEDzJP63visSsRUlOpqLNmPoeHAPa7owHVnKf9PU2vwCPneKVe4kG9cnWN4TydYVuPtPxRmcFjU2RdicEDHqRzq+0zJX2zqpZEoNjgsmM8mEFggngHMgDHrcibnkLaeB0I=";
+    console.log(correct === encrypted);
+    console.log(encrypted);
+    console.log(uploadedKey);
     axios
       .get(url, {
         crossdomain: true,
         params: {
-          encrypted: encrypted,
-          key: uploadedKey
+          encryptedK: encrypted,
+          pkey: uploadedKey
         }
       })
       .then(response => {
@@ -108,7 +114,7 @@ const DecoderUploader = () => {
     newImage.onload = () => {
       setImage(newImage);
     };
-  }, [mode]);
+  }, [imgData]);
 
   useEffect(() => {
     if (image && canvas) {
@@ -178,8 +184,9 @@ const DecoderUploader = () => {
           }
         }
         //}
+
         if (!foundMsg) {
-          out_msg = "Msg Not Found";
+          out_msg = "Not an encoded image";
         } else {
           // Our message now contains all the bits we need to convert
           out_msg = binaryToText(hidden_msg);
@@ -187,18 +194,19 @@ const DecoderUploader = () => {
         }
       }
 
+      console.log("hidden text is");
+      console.log(hidden_msg);
+
       // examples
-      var enc =
-        "J1N5qxm7eoJ1/HGZyNoDi4S6V00/Fdl++j4bxxdtjRQr1D2tAMpEDjG3RmqoZm1MAz6zc2Ahb347GsIHSDc8sNvqf0ixD5mSa4kaxv9LHbaaOA5xbvKf93dw5Rvc6uphrG87uHIwPb05cfoVyLS9SGzUwvYa7nwABPktcyCRKmU=";
+      var corr =
+        "feH4KJMFqBjQzw9jDxrVRzoTqsruNX7jejBBLg9PiNEDzJP63visSsRUlOpqLNmPoeHAPa7owHVnKf9PU2vwCPneKVe4kG9cnWN4TydYVuPtPxRmcFjU2RdicEDHqRzq+0zJX2zqpZEoNjgsmM8mEFggngHMgDHrcibnkLaeB0I=";
       var keyy =
         "b'-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCa2YBlh3RGDve2sS3sAt0DtqSzoCofH2KqQ8vvhcfWyPX+YYvs\n44jCN+m/CwpGD8UIxdvjERkGNMrnAeaOQe0oGDJrdL7OYNPKVk01ihCFR7yvNE1c\nSbgHxMiYQGS8Vafqik0RirZ7tFuCD/M8c4/B+nFvoeMjXIZ2Fn8ljztMJQIDAQAB\nAoGAPsne5ExOe3HqQ+wIIODwWWcf1a4mJkSFr2CaOt9WLuOBy8omAMIqXAZsA4ko\ne0w9qtb/2EzAhuG1PIJqyFg3Hx8WCWaXiXF/0Jg9BMaKJ9i2JxfH2HBVAG4b51m7\nyQJCLjrDxBULjQno7eOGuXEqtfMU8TeRShD6oq3oCiAfFsECQQC63N1wONylkhdC\n3jbvyqnzluabHk2rxYRd+RigOW0LqvNQAV5iMJMSLxgXYUiIRjdN14cH3Q6cYrds\nElc/2xANAkEA1CRwSF9VPDyctNsXdhSgP3Rz0w198JHEPlPURNU3w35M0lm8vtP/\nM0Xx0WAPs/1ZcvwDVtqyBisRzCKguRAOeQJAQEu6zeBi232XD2USlhOvwqcLlhgp\nNY9y6jrJpGfeA4PA0KiH51U7Zahaq8DHikxOvzQHvEbtvhWhc0gkSU6BCQJBAKBq\nUXGYjSZ4mvLzfUEwBaEWGQNt/16rix6qWygVpw4v8j1Z2Czgt+h4qovtvNIY8MvP\nH2NNCjM53EJlqO1n49kCQHvUokmpJfT0lVJiWPztIOVTrhDcbu9Ygrxc4xYBwOzL\nBOXlcSpfs1k6C2DS04UUJUIuEQ62SQqiAzLW+2sWeWc=\n-----END RSA PRIVATE KEY-----'";
 
-      setEncrypted(enc);
+      setEncrypted(corr);
       console.log("encrypted.length");
-      console.log(encrypted.length);
-      console.log("before sending");
-      sendImageKey();
-      console.log("after sending");
+      console.log(corr);
+      console.log(corr.length);
       //setDecodedMessage(out_msg);
 
       ctx.putImageData(imageData, 0, 0); // i think we can delete
@@ -221,6 +229,12 @@ const DecoderUploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
+    console.log("encrypted is:");
+    console.log(encrypted);
+    console.log("private key before calling send()");
+    console.log(uploadedKey);
+
+    sendImageKey();
     setTimeout(function() {
       setMode("End");
     }, 1000);
@@ -268,6 +282,22 @@ const DecoderUploader = () => {
               {fileNameToDecode}
             </label>
           </div>
+
+          <Description>
+            This is the encoded image you uploaded! <br></br>
+            <br></br>
+          </Description>
+          <div
+            style={{
+              padding: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <canvas ref={canvas} />
+          </div>
+
           <div
             style={{
               padding: "10px",
@@ -296,20 +326,7 @@ const DecoderUploader = () => {
         <DescriptionLight>
           {decodedMessage ? decodedMessage : ""}
         </DescriptionLight>
-        <Description>
-          This is the encoded image you uploaded! <br></br>
-          <br></br>
-        </Description>
-        <div
-          style={{
-            padding: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <canvas ref={canvas} width={60} height={60} />
-        </div>
+
         <br></br>
         <div
           style={{

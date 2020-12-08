@@ -133,10 +133,9 @@ def to_encrypt(message):
     string_privatekey = str(export_privatekey)
     return (encrypted3, string_privatekey)
 
+
 def to_decrypt(string_privatekey, encrypted):
-
     privatekey = RSA.importKey(string_privatekey)
-
     decrypted = str(decrypt(privatekey, encrypted))
 
     decrypted2 = decrypted.strip('b')

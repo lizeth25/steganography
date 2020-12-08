@@ -80,6 +80,8 @@ const Uploader = () => {
       .then(response => {
         //handle success
         console.log("sent to server");
+        console.log(response.data.privateKey);
+        console.log(response.data.encrypted);
         setPrivateKey(response.data.privateKey);
         setEncrypted(response.data.encrypted);
         // combine the first and last of our private key
@@ -101,7 +103,7 @@ const Uploader = () => {
 
   useEffect(() => {
     if (image && canvas) {
-      sendMessage();
+      // sendMessage();
       const ctx = canvas.current.getContext("2d");
       // imgWidth = canvas.current.width;
       // imgHeight = canvas.current.height;
@@ -111,11 +113,14 @@ const Uploader = () => {
       const h = canvas.current.height;
       ctx.drawImage(image, 0, 0); // displays image
 
+      console.log(encrypted);
+      console.log(encrypted.length);
+      console.log("^ encry");
+
       const imageData = ctx.getImageData(0, 0, w, h);
       var data = imageData.data;
-      const messageLen = message.length;
-      const messBegin = messageLen.toString() + "*";
-      const finalMessageString = messageLen.toString() + "*" + message;
+      const messageLen = encrypted.length;
+      const finalMessageString = messageLen.toString() + "*" + encrypted;
 
       const bs = textToBinary(finalMessageString); // returns binary string to encode
 
@@ -159,7 +164,7 @@ const Uploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    // sendMessage();
+    sendMessage();
     setTimeout(function() {
       setMode("End");
     }, 1000);
@@ -247,7 +252,7 @@ const Uploader = () => {
             justifyContent: "center"
           }}
         >
-          <canvas ref={canvas} width={60} height={60} />
+          <canvas ref={canvas} />
         </div>
         <br></br>
         <div
