@@ -10,16 +10,6 @@ The development server will attempt to proxy API requests to the server specifie
 
 ## Development
 
-### Testing
-
-The tests use both Jest and Enzyme has described in the [CRA documentation](https://facebook.github.io/create-react-app/docs/running-tests).
-
-For reference Enzyme was installed with:
-
-```
-npm install --save-dev enzyme enzyme-adapter-react-16 react-test-renderer
-```
-
 ### Linting
 
 You can run the linter with `npm run lint` or `npx eslint src`.
@@ -31,7 +21,3 @@ npm install --save-dev eslint-config-prettier
 ```
 
 and updated the `"eslintConfig"` field in `package.json`.
-
-### Managing Secrets
-
-Note that CRA [manages secrets](https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env) in a more complicated manner (than generally, and used in the server). In short environment variables that are not secrets, e.g. configuration parameters, should be placed in the `.env` file, *which is checked in to version control*, and secrets should be placed in `.env.local`, *which is not checked in to version control*. If your secrets are needed by your tests, you will need to [add them to your repository in Travis-CI](https://docs.travis-ci.com/user/environment-variables/).

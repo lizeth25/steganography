@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-// import PropTypes from "prop-types";
 import { Button, Collapse } from "reactstrap";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Uploader from "./Uploader";
+import UploaderTry from "./UploaderTry";
 
 const Title = styled.h1`
   text-align: center;
@@ -60,12 +58,12 @@ const Encoder = () => {
 
       <Title> Instructions </Title>
       <Description>
-        Upload a photo or video of your choice, as well as the message you wish
-        to encode in the file.
+        Upload a png photo or video of your choice, as well as the message you
+        wish to encode in the file.
       </Description>
 
       <div style={{ padding: "1em" }}>
-        <Uploader></Uploader>
+        <UploaderTry></UploaderTry>
       </div>
 
       <div style={{ padding: "20px 0px" }}></div>
