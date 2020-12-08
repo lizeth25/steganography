@@ -121,72 +121,129 @@ const DecoderUploader = () => {
       // using * as signal to denote when the length of the message is done being encoded into message
       const signal = "00101010"; // represents the first *
       var len_str = ""; // bin string w/ length
-      var msg_len = ""; // bin String converted
+      var msg_len; // bin String converted
       var hidden_msg = ""; // encoded bin str
       var foundLen = false;
       var foundMsg = false;
       var index = 0;
       var out_msg = "";
+      console.log(data);
 
-      // we can use len_str to add 8 bin chars which we will convert to a number unless it is our signal
-      // always check last 8 chars for signal. when found turn len_str[:-8] into integer
-      // Then we keep and index and for every set of 8 bin numbers we have one character we add to our message
-
-      // calculate length of the message by adding appropriate bin value to len_str until * tells us when to stop adding
-      decode: for (var i = 0; i < data.length; i += 4) {
-        // if (i % 4 != 3) {
-        if (!foundMsg) {
-          const num = data[i];
-          const binNum = num.toString(2);
-          const least_bit = binNum.slice(-1);
-          if (!foundLen) {
-            if (len_str != "" && len_str.length % 8 == 0) {
-              const last_eight = len_str.slice(-8);
-              // we can check last 8 bits added and convert to a character
-              if (last_eight == signal) {
-                foundLen = true;
-                try {
-                  msg_len = parseInt(msg_len, 10); // length of out bit message
-                } catch {
-                  out_msg = "Not an encoded image";
-                  break decode;
-                }
-                hidden_msg += least_bit;
-              }
-              // if not the signal, convert the eight bits to a character
-              else {
-                msg_len += binaryToText(last_eight);
-                len_str += least_bit; // check this
-              }
-            } else {
-              // we are adding the least significant value to our len_str until we find signal
-              len_str += least_bit;
+      // checking to see if encoded image and if so finding length of hidden msg
+      for (var i = 0; i < data.length; i += 4) {
+        const num = data[i];
+        const binNum = num.toString(2);
+        const least_bit = binNum.slice(-1);
+        len_str += least_bit;
+        const l = len_str.length;
+        if (l !== 0 && l % 8 === 0) {
+          const last_eight = len_str.slice(-8);
+          if (last_eight === signal) {
+            try {
+              const beforeStr = len_str.slice(0, l - 8);
+              const beforeInt = binaryToText(beforeStr);
+              console.log("before");
+              console.log(beforeInt);
+              msg_len = parseInt(beforeInt, 10); // length of out bit message
+              foundLen = true;
+              console.log("Found Length", msg_len.toString());
+              console.log("final index i am at ", i.toString());
+            } catch {
+              out_msg = "Not an encoded image";
             }
           }
-
-          // length has been found we now are ready to add our binary numbers to our msg string and then convert
-          else {
-            if (index < msg_len * 8) {
-              hidden_msg += least_bit;
-              index += 1;
-            } else {
-              foundMsg = true;
-            }
-          }
-        }
-        //}
-
-        if (!foundMsg) {
-          out_msg = "Not an encoded image";
-        } else {
-          // Our message now contains all the bits we need to convert
-          out_msg = binaryToText(hidden_msg);
-          out_msg = out_msg.slice(0, -1);
         }
       }
+      console.log(msg_len);
 
-      console.log("hidden text is");
-      console.log(hidden_msg);
+      if (foundLen) {
+        const startIndex = (msg_len.toString().length + 1) * 8 * 4;
+        console.log("start index ", startIndex);
+        const remainingBits = msg_len * 8;
+        console.log("remaining ", remainingBits);
+        for (var i = 0; i < remainingBits * 4; i += 4) {
+          const num = data[i + startIndex];
+          const binNum = num.toString(2);
+          const least_bit = binNum.slice(-1);
+          hidden_msg += least_bit;
+        }
+        foundMsg = true;
+        console.log("Hidden message");
+        console.log(hidden_msg);
+        console.log(hidden_msg.length);
+        console.log(binaryToText(hidden_msg));
+        console.log(w, h);
+      } else {
+        out_msg = "Not an encoded image";
+        console.log(out_msg);
+      }
+
+      // // we can use len_str to add 8 bin chars which we will convert to a number unless it is our signal
+      // // always check last 8 chars for signal. when found turn len_str[:-8] into integer
+      // // Then we keep and index and for every set of 8 bin numbers we have one character we add to our message
+      // var aR = []
+      // // calculate length of the message by adding appropriate bin value to len_str until * tells us when to stop adding
+      // decode:
+      // for (var i = 0; i < data.length; i += 4) {
+      //   // if (i % 4 != 3) {
+      //   if (!foundMsg) {
+      //     aR.push(i)
+      //     const num = data[i];
+      //     const binNum = num.toString(2);
+      //     const least_bit = binNum.slice(-1);
+      //     if (!foundLen) {
+      //       console.log("Cool")
+      //       if (len_str != "" && len_str.length % 8 == 0) {
+      //         const last_eight = len_str.slice(-8);
+      //         // we can check last 8 bits added and convert to a character
+      //         if (last_eight === signal) {
+      //           foundLen = true;
+      //           try {
+      //             msg_len = parseInt(msg_len, 10); // length of out bit message
+      //             console.log("Found String",msg_len)
+      //             hidden_msg += least_bit;
+      //           } catch {
+      //             console.log("caught err")
+      //             out_msg = "Not an encoded image";
+      //             break decode;
+      //           }
+
+      //         }
+      //         // if not the signal, convert the eight bits to a character
+      //         else {
+      //           msg_len += binaryToText(last_eight);
+      //           len_str += least_bit; // check this
+      //         }
+      //       } else {
+      //         // we are adding the least significant value to our len_str until we find signal
+      //         len_str += least_bit;
+      //       }
+      //     }
+
+      //     // length has been found we now are ready to add our binary numbers to our msg string and then convert
+      //     else {
+      //       if (index < (msg_len * 8)) {
+      //         hidden_msg += least_bit;
+      //         index += 1;
+      //       } else {
+      //         foundMsg = true;
+      //       }
+      //     }
+      //   }
+      //   //}
+      // }
+
+      // if (!foundMsg) {
+      //   out_msg = "Not an encoded image";
+      // } else {
+      //   // Our message now contains all the bits we need to convert
+      //   out_msg = binaryToText(hidden_msg);
+      //   // out_msg = out_msg.slice(0, -1);
+      // }
+      // console.log(aR)
+      // console.log("hidden text is");
+      // console.log(hidden_msg);
+      // console.log(out_msg)
 
       // examples
       var corr =

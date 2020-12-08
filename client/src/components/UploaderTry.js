@@ -113,19 +113,15 @@ const Uploader = () => {
       const h = canvas.current.height;
       ctx.drawImage(image, 0, 0); // displays image
 
-      console.log(encrypted);
-      console.log(encrypted.length);
-      console.log("^ encry");
-
       const imageData = ctx.getImageData(0, 0, w, h);
       var data = imageData.data;
       const messageLen = encrypted.length;
       const finalMessageString = messageLen.toString() + "*" + encrypted;
 
       const bs = textToBinary(finalMessageString); // returns binary string to encode
-
+      var arrIndex = [];
+      var st = "";
       var bsIndex = 0; // tell us when to stop encoding message
-
       for (var index = 0; index < data.length; index += 4) {
         // Only encode up to length of binary string
         if (bsIndex < bs.length) {
@@ -137,13 +133,16 @@ const Uploader = () => {
           const newNum = parseInt(newBinNum, 2);
 
           data[index] = newNum;
-
+          arrIndex.push(index);
           bsIndex += 1;
+          st += newBinNum.slice(-1);
         }
       }
       ctx.putImageData(imageData, 0, 0);
-
       newImgData = canvas.current.toDataURL("image/png");
+      console.log(arrIndex);
+      console.log(data);
+      console.log(st);
 
       download(newImgData, "encoded.png");
     }
@@ -166,8 +165,11 @@ const Uploader = () => {
     e.preventDefault();
     sendMessage();
     setTimeout(function() {
+      console.log("beforemode");
       setMode("End");
-    }, 1000);
+      console.log("aftermode");
+    }, 2000);
+    console.log("aftertimeour");
   };
 
   if (mode === "Start") {
