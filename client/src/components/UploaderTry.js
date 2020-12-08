@@ -62,6 +62,7 @@ const Uploader = () => {
   const [message, setMessage] = useState("");
   const [image, setImage] = useState(null);
   const [privateKey, setPrivateKey] = useState("");
+  const [encrypted, setEncrypted] = useState("");
   const canvas = React.useRef(null);
   var newImgData;
   var imgWidth;
@@ -79,9 +80,8 @@ const Uploader = () => {
       .then(response => {
         //handle success
         console.log("sent to server");
-
         setPrivateKey(response.data.privateKey);
-
+        setEncrypted(response.data.encrypted);
         // combine the first and last of our private key
         // give private key to user
       })
@@ -101,6 +101,7 @@ const Uploader = () => {
 
   useEffect(() => {
     if (image && canvas) {
+      sendMessage();
       const ctx = canvas.current.getContext("2d");
       // imgWidth = canvas.current.width;
       // imgHeight = canvas.current.height;
@@ -112,7 +113,6 @@ const Uploader = () => {
 
       const imageData = ctx.getImageData(0, 0, w, h);
       var data = imageData.data;
-
       const messageLen = message.length;
       const messBegin = messageLen.toString() + "*";
       const finalMessageString = messageLen.toString() + "*" + message;
@@ -159,6 +159,7 @@ const Uploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
+    // sendMessage();
     setTimeout(function() {
       setMode("End");
     }, 1000);
@@ -233,7 +234,7 @@ const Uploader = () => {
           message was encoded, it was encrypted with RSA. <br></br>The private
           key pair needed to decrypt the message is: <br></br>
         </Description>
-        <DescriptionLight></DescriptionLight>
+        <DescriptionLight>{privateKey ? privateKey : ""}</DescriptionLight>
         <Description>
           This is the original, nonencoded image you uploaded! <br></br>
           <br></br>

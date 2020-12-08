@@ -88,7 +88,7 @@ def decodeIm(image):
                         index += 1
                     else:
                         foundMsg = True
-        
+
     if not foundMsg:
         return("Msg Not Found")
     # Our message now contains all the bits we need to convert
@@ -129,9 +129,10 @@ def to_encrypt(message):
     encrypted2 = str(encrypted).strip('b')
     encrypted3 = str(encrypted2).strip("'")
 
-    string_privatekey = privatekey.exportKey()
+    export_privatekey = privatekey.exportKey()
+    string_privatekey = str(export_privatekey)
     return (encrypted3, string_privatekey)
-    
+
 def to_decrypt(string_privatekey, encrypted):
 
     privatekey = RSA.importKey(string_privatekey)
