@@ -1,7 +1,5 @@
-import { check } from "prettier";
-import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
-import Home from "./Home";
 import axios from "axios";
 
 const Description = styled.div`
@@ -25,8 +23,6 @@ const DescriptionLight = styled.div`
   white-space: -o-pre-wrap;
   word-wrap: break-word;
 `;
-
-var download = require("downloadjs");
 
 // from
 // https://stackoverflow.com/questions/21354235/converting-binary-to-text-using-javascript
@@ -68,42 +64,53 @@ const DecoderUploader = () => {
   const [image, setImage] = useState(null);
   const [encrypted, setEncrypted] = useState("");
   const [uploadedKey, setUploadedKey] = useState("");
+  const [width, setWidth] = useState(75);
+  const [height, setHeight] = useState(75);
   const canvas = React.useRef(null);
 
+  function getDims(ul) {
+    const img = new Image();
+    img.onload = () => {
+      setWidth(img.width);
+      setHeight(img.height);
+    };
+    img.src = ul;
+  }
+
   function sendImageKey() {
-    const url = "http://localhost:3001/decoded";
-    console.log("being sent to server, hopefully");
-    console.log("encrypted");
-    console.log(encrypted);
-    console.log("uploadedKey");
-    console.log(uploadedKey);
-    axios
-      .get(url, {
-        crossdomain: true,
-        params: {
-          encryptedK: encrypted,
-          pkey: uploadedKey
-        }
-      })
-      .then(response => {
-        //handle success
-        console.log("returned from to server");
-        setDecodedMessage(response.data.decodedMessage);
-        console.log("decodedMessage");
-        console.log(response.data.decodedMessage);
-      })
-      .catch(error => {
-        //handle error
-        alert(error);
-      });
+    if (encrypted === "Not an encoded image" || encrypted === "Msg not found") {
+      setDecodedMessage(encrypted);
+    } else {
+      const url = "http://localhost:3001/decoded";
+      axios
+        .get(url, {
+          crossdomain: true,
+          params: {
+            encryptedK: encrypted,
+            pkey: uploadedKey
+          }
+        })
+        .then(response => {
+          //handle success
+          setDecodedMessage(response.data.decodedMessage);
+        })
+        .catch(error => {
+          //handle error
+          alert(error);
+        });
+    }
   }
 
   useEffect(() => {
-    const newImage = new Image();
-    newImage.src = imgData;
-    newImage.onload = () => {
-      setImage(newImage);
-    };
+    if (imgData !== null) {
+      getDims(imgData);
+
+      const newImage = new Image();
+      newImage.src = imgData;
+      newImage.onload = () => {
+        setImage(newImage);
+      };
+    }
   }, [imgData]);
 
   useEffect(() => {
@@ -111,7 +118,6 @@ const DecoderUploader = () => {
       const ctx = canvas.current.getContext("2d");
       const w = canvas.current.width;
       const h = canvas.current.height;
-      // console.log(w, h);
       ctx.drawImage(image, 0, 0); // displays image
 
       const imageData = ctx.getImageData(0, 0, w, h);
@@ -121,87 +127,60 @@ const DecoderUploader = () => {
       // using * as signal to denote when the length of the message is done being encoded into message
       const signal = "00101010"; // represents the first *
       var len_str = ""; // bin string w/ length
-      var msg_len = ""; // bin String converted
+      var msg_len; // bin String converted
       var hidden_msg = ""; // encoded bin str
       var foundLen = false;
-      var foundMsg = false;
-      var index = 0;
+      var foundMsg = false; // eslint-disable-line no-unused-vars
       var out_msg = "";
 
-      // we can use len_str to add 8 bin chars which we will convert to a number unless it is our signal
-      // always check last 8 chars for signal. when found turn len_str[:-8] into integer
-      // Then we keep and index and for every set of 8 bin numbers we have one character we add to our message
-
-      // calculate length of the message by adding appropriate bin value to len_str until * tells us when to stop adding
-      decode: for (var i = 0; i < data.length; i += 4) {
-        // if (i % 4 != 3) {
-        if (!foundMsg) {
-          const num = data[i];
-          const binNum = num.toString(2);
-          const least_bit = binNum.slice(-1);
-          if (!foundLen) {
-            if (len_str != "" && len_str.length % 8 == 0) {
-              const last_eight = len_str.slice(-8);
-              // we can check last 8 bits added and convert to a character
-              if (last_eight == signal) {
-                foundLen = true;
-                try {
-                  msg_len = parseInt(msg_len, 10); // length of out bit message
-                } catch {
-                  out_msg = "Not an encoded image";
-                  break decode;
-                }
-                hidden_msg += least_bit;
-              }
-              // if not the signal, convert the eight bits to a character
-              else {
-                msg_len += binaryToText(last_eight);
-                len_str += least_bit; // check this
-              }
-            } else {
-              // we are adding the least significant value to our len_str until we find signal
-              len_str += least_bit;
+      // checking to see if encoded image and if so finding length of hidden msg
+      for (var ind = 0; ind < data.length; ind += 2) {
+        const num = data[ind];
+        const binNum = num.toString(2);
+        const least_bit = binNum.slice(-1);
+        len_str += least_bit;
+        const l = len_str.length;
+        if (l !== 0 && l % 8 === 0) {
+          const last_eight = len_str.slice(-8);
+          if (last_eight === signal) {
+            try {
+              const beforeStr = len_str.slice(0, l - 8);
+              const beforeInt = binaryToText(beforeStr);
+              msg_len = parseInt(beforeInt, 10); // length of out bit message
+              foundLen = true;
+            } catch {
+              out_msg = "Not an encoded image";
             }
           }
-
-          // length has been found we now are ready to add our binary numbers to our msg string and then convert
-          else {
-            if (index < msg_len * 8) {
-              hidden_msg += least_bit;
-              index += 1;
-            } else {
-              foundMsg = true;
-            }
-          }
-        }
-        //}
-
-        if (!foundMsg) {
-          out_msg = "Not an encoded image";
-        } else {
-          // Our message now contains all the bits we need to convert
-          out_msg = binaryToText(hidden_msg);
-          out_msg = out_msg.slice(0, -1);
         }
       }
 
-      console.log("hidden text is ");
-      console.log(out_msg);
-
+      if (foundLen) {
+        const startIndex = (msg_len.toString().length + 1) * 8 * 2;
+        const remainingBits = msg_len * 8;
+        // looping only whats left of message
+        for (var i = 0; i < remainingBits * 2 && i < data.length; i += 2) {
+          const num = data[i + startIndex];
+          const binNum = num.toString(2);
+          const least_bit = binNum.slice(-1);
+          hidden_msg += least_bit;
+        }
+        if (i < remainingBits * 4 && i >= data.length) {
+          out_msg = "Msg not found";
+        } else {
+          foundMsg = true;
+          out_msg = binaryToText(hidden_msg);
+        }
+      } else {
+        out_msg = "Not an encoded image";
+      }
       setEncrypted(out_msg);
-
-      sendImageKey();
-
-      //setDecodedMessage(out_msg);
-
-      ctx.putImageData(imageData, 0, 0); // i think we can delete
+      // ctx.putImageData(imageData, 0, 0); // i think we can delete
     }
   }, [image, canvas]);
 
   const uploadedKeyInput = e => {
     setUploadedKey(e.target.value);
-    console.log("uploadedKey.length");
-    console.log(uploadedKey.length);
   };
 
   const uploadedFileToDecode = e => {
@@ -216,12 +195,8 @@ const DecoderUploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    // console.log("encrypted is:");
-    // console.log(encrypted);
-    // console.log("private key before calling send()");
-    // console.log(uploadedKey);
-
-    // sendImageKey();
+    setTimeout(function() {}, 2000);
+    sendImageKey();
     setTimeout(function() {
       setMode("End");
     }, 1000);
@@ -269,11 +244,16 @@ const DecoderUploader = () => {
               {fileNameToDecode}
             </label>
           </div>
-
-          <Description>
-            This is the encoded image you uploaded! <br></br>
-            <br></br>
-          </Description>
+          {imgData && image !== null ? (
+            <Description>
+              This is the encoded image you uploaded! If you do not see the
+              photo yet, please wait before submitting the image! Remember the
+              larger the photo, the longer it will take. <br></br>
+              <br></br>
+            </Description>
+          ) : (
+            ""
+          )}
           <div
             style={{
               padding: "10px",
@@ -282,7 +262,7 @@ const DecoderUploader = () => {
               justifyContent: "center"
             }}
           >
-            <canvas ref={canvas} />
+            <canvas ref={canvas} width={width} height={height} />
           </div>
 
           <div
@@ -322,15 +302,7 @@ const DecoderUploader = () => {
             alignItems: "center",
             justifyContent: "center"
           }}
-        >
-          <input
-            style={{ background: "#00DE66", border: "0px" }}
-            type="button"
-            value="Decode Another Image"
-            className="btn"
-            onClick={() => setMode("Start")}
-          ></input>
-        </div>
+        ></div>
       </div>
     );
   }

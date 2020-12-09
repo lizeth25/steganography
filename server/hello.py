@@ -1,4 +1,3 @@
-import cv2
 import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
@@ -180,7 +179,6 @@ def convertToList(a):
     for elem in a:
         outArr.append(int(elem))
     return(outArr)
-
 # encrypted3 (172)
 # (172*8+8+24 = how long array needs to be for image to be encoded)
 # returning 496(img array) , private

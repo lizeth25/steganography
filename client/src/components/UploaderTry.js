@@ -1,5 +1,4 @@
-import { check } from "prettier";
-import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -37,24 +36,6 @@ function textToBinary(t) {
   return out;
 }
 
-/*
-TO DO
-add 'here is your original image' and 'upload only png'
-fix 'encode another image'
-decoder
-set canvas width and height
-updating our server to only receive message, and send back encrypted3 and private key
-useEffect?
-png vs jpeg download
-
-go/csmajorss
-based on new changes we can update our max message length
-
-video potentially
-
-textToBinary will not work with special characters like those who have more than 8bits
-*/
-
 const Uploader = () => {
   const [fileName, setFileName] = useState("Choose Image or Video");
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
@@ -63,10 +44,10 @@ const Uploader = () => {
   const [image, setImage] = useState(null);
   const [privateKey, setPrivateKey] = useState("");
   const [encrypted, setEncrypted] = useState("");
+  const [width, setWidth] = useState(75);
+  const [height, setHeight] = useState(75);
   const canvas = React.useRef(null);
   var newImgData;
-  var imgWidth;
-  var imgHeight;
 
   function sendMessage() {
     let url = "http://localhost:3001/encoded";
@@ -79,11 +60,6 @@ const Uploader = () => {
       })
       .then(response => {
         //handle success
-        console.log("sent to server");
-        console.log("privateKey");
-        console.log(response.data.privateKey);
-        console.log("encrypted");
-        console.log(response.data.encrypted);
         setPrivateKey(response.data.privateKey);
         setEncrypted(response.data.encrypted);
         // combine the first and last of our private key
@@ -98,25 +74,19 @@ const Uploader = () => {
   useEffect(() => {
     const newImage = new Image();
     newImage.src = imgData;
+
     newImage.onload = () => {
       setImage(newImage);
     };
-  }, [mode]);
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (image && canvas) {
+    if (image && canvas && mode !== "Start") {
       // sendMessage();
       const ctx = canvas.current.getContext("2d");
-      // imgWidth = canvas.current.width;
-      // imgHeight = canvas.current.height;
-      // imgWidth = image.width;
-      // imgHeight = image.height;
       const w = canvas.current.width;
       const h = canvas.current.height;
       ctx.drawImage(image, 0, 0); // displays image
-
-      console.log("encrypted.length");
-      console.log(encrypted.length);
 
       const imageData = ctx.getImageData(0, 0, w, h);
       var data = imageData.data;
@@ -124,10 +94,8 @@ const Uploader = () => {
       const finalMessageString = messageLen.toString() + "*" + encrypted;
 
       const bs = textToBinary(finalMessageString); // returns binary string to encode
-
       var bsIndex = 0; // tell us when to stop encoding message
-
-      for (var index = 0; index < data.length; index += 4) {
+      for (var index = 0; index < data.length; index += 2) {
         // Only encode up to length of binary string
         if (bsIndex < bs.length) {
           const num = data[index];
@@ -138,15 +106,13 @@ const Uploader = () => {
           const newNum = parseInt(newBinNum, 2);
 
           data[index] = newNum;
-
           bsIndex += 1;
         }
       }
       ctx.putImageData(imageData, 0, 0);
+      newImgData = canvas.current.toDataURL("image/png"); // eslint-disable-line react-hooks/exhaustive-deps
 
-      newImgData = canvas.current.toDataURL("image/png");
-
-      download(newImgData, "encoded.png");
+      download(newImgData, fileName.slice(0, -4) + "_encoded.png");
     }
   }, [image, canvas]);
 
@@ -165,6 +131,13 @@ const Uploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
+    var img = new Image();
+    img.onload = function() {
+      setWidth(this.width);
+      setHeight(this.height);
+    };
+    img.src = imgData;
+
     sendMessage();
     setTimeout(function() {
       setMode("End");
@@ -253,7 +226,7 @@ const Uploader = () => {
             justifyContent: "center"
           }}
         >
-          <canvas ref={canvas} />
+          <canvas ref={canvas} width={width} height={height} />
         </div>
         <br></br>
         <div
