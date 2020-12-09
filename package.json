@@ -4,7 +4,7 @@
   "private": true,
   "description": "StegMsg: ",
   "engines": {
-    "node": "12.14.x"
+    "node": "12.16.x"
   },
   "scripts": {
     "start": "concurrently \"npm run watch --prefix server\" \"npm start --prefix client\"",
@@ -23,7 +23,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "concurrently": "^5.3.0",
-    "husky": "^4.3.4",
+    "husky": "^4.3.5",
     "lint-staged": "^10.5.3",
     "prettier": "^1.19.1"
   },
