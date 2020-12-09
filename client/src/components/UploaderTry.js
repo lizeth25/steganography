@@ -1,5 +1,4 @@
-import { check } from "prettier";
-import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -37,13 +36,6 @@ function textToBinary(t) {
   return out;
 }
 
-/*
-TO DO
-set canvas width and height
-png vs jpeg download
-video
-*/
-
 const Uploader = () => {
   const [fileName, setFileName] = useState("Choose Image or Video");
   const [mode, setMode] = useState("Start"); //2 Modes: Start and End
@@ -52,10 +44,10 @@ const Uploader = () => {
   const [image, setImage] = useState(null);
   const [privateKey, setPrivateKey] = useState("");
   const [encrypted, setEncrypted] = useState("");
+  const [width, setWidth] = useState(75);
+  const [height, setHeight] = useState(75);
   const canvas = React.useRef(null);
   var newImgData;
-  var imgWidth = 60;
-  var imgHeight = 60;
 
   function sendMessage() {
     let url = "http://localhost:3001/encoded";
@@ -86,10 +78,10 @@ const Uploader = () => {
     newImage.onload = () => {
       setImage(newImage);
     };
-  }, [mode]);
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (image && canvas) {
+    if (image && canvas && mode !== "Start") {
       // sendMessage();
       const ctx = canvas.current.getContext("2d");
       const w = canvas.current.width;
@@ -102,8 +94,6 @@ const Uploader = () => {
       const finalMessageString = messageLen.toString() + "*" + encrypted;
 
       const bs = textToBinary(finalMessageString); // returns binary string to encode
-      var arrIndex = [];
-      var st = "";
       var bsIndex = 0; // tell us when to stop encoding message
       for (var index = 0; index < data.length; index += 2) {
         // Only encode up to length of binary string
@@ -116,15 +106,13 @@ const Uploader = () => {
           const newNum = parseInt(newBinNum, 2);
 
           data[index] = newNum;
-          arrIndex.push(index);
           bsIndex += 1;
-          st += newBinNum.slice(-1);
         }
       }
       ctx.putImageData(imageData, 0, 0);
-      newImgData = canvas.current.toDataURL("image/png");
+      newImgData = canvas.current.toDataURL("image/png"); // eslint-disable-line react-hooks/exhaustive-deps
 
-      download(newImgData, "encoded.png");
+      download(newImgData, fileName.slice(0, -4) + "_encoded.png");
     }
   }, [image, canvas]);
 
@@ -143,6 +131,13 @@ const Uploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
+    var img = new Image();
+    img.onload = function() {
+      setWidth(this.width);
+      setHeight(this.height);
+    };
+    img.src = imgData;
+
     sendMessage();
     setTimeout(function() {
       setMode("End");
@@ -231,7 +226,7 @@ const Uploader = () => {
             justifyContent: "center"
           }}
         >
-          <canvas ref={canvas} width={60} height={60} />
+          <canvas ref={canvas} width={width} height={height} />
         </div>
         <br></br>
         <div

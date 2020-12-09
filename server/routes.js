@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path"); // eslint-disable-line global-require
-const spawn = require("child_process").spawn;
+const spawn = require("child_process").spawn; // eslint-disable-line prefer-destructuring
 
 const app = express();
 const cors = require("cors");
@@ -47,7 +47,6 @@ app.get("/encoded", (req, res) => {
 app.get("/decoded", (req, res) => {
   const pKey = req.query.pkey;
   const eNcrypted = req.query.encryptedK;
-  console.log(req.query);
   const nextProcessD = spawn("python3", ["./imagedecoder.py", eNcrypted, pKey]);
   nextProcessD.stdout.on("data", data => {
     res.send(JSON.parse(data));

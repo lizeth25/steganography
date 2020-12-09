@@ -1,7 +1,5 @@
-import { check } from "prettier";
-import React, { Fragment, useState, useEffect, useRef, createRef } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
-import Home from "./Home";
 import axios from "axios";
 
 const Description = styled.div`
@@ -25,8 +23,6 @@ const DescriptionLight = styled.div`
   white-space: -o-pre-wrap;
   word-wrap: break-word;
 `;
-
-var download = require("downloadjs");
 
 // from
 // https://stackoverflow.com/questions/21354235/converting-binary-to-text-using-javascript
@@ -68,35 +64,53 @@ const DecoderUploader = () => {
   const [image, setImage] = useState(null);
   const [encrypted, setEncrypted] = useState("");
   const [uploadedKey, setUploadedKey] = useState("");
+  const [width, setWidth] = useState(75);
+  const [height, setHeight] = useState(75);
   const canvas = React.useRef(null);
 
+  function getDims(ul) {
+    const img = new Image();
+    img.onload = () => {
+      setWidth(img.width);
+      setHeight(img.height);
+    };
+    img.src = ul;
+  }
+
   function sendImageKey() {
-    const url = "http://localhost:3001/decoded";
-    axios
-      .get(url, {
-        crossdomain: true,
-        params: {
-          encryptedK: encrypted,
-          pkey: uploadedKey
-        }
-      })
-      .then(response => {
-        //handle success
-        console.log("sent to server");
-        setDecodedMessage(response.data.decodedMessage);
-      })
-      .catch(error => {
-        //handle error
-        alert(error);
-      });
+    if (encrypted === "Not an encoded image" || encrypted === "Msg not found") {
+      setDecodedMessage(encrypted);
+    } else {
+      const url = "http://localhost:3001/decoded";
+      axios
+        .get(url, {
+          crossdomain: true,
+          params: {
+            encryptedK: encrypted,
+            pkey: uploadedKey
+          }
+        })
+        .then(response => {
+          //handle success
+          setDecodedMessage(response.data.decodedMessage);
+        })
+        .catch(error => {
+          //handle error
+          alert(error);
+        });
+    }
   }
 
   useEffect(() => {
-    const newImage = new Image();
-    newImage.src = imgData;
-    newImage.onload = () => {
-      setImage(newImage);
-    };
+    if (imgData !== null) {
+      getDims(imgData);
+
+      const newImage = new Image();
+      newImage.src = imgData;
+      newImage.onload = () => {
+        setImage(newImage);
+      };
+    }
   }, [imgData]);
 
   useEffect(() => {
@@ -116,12 +130,12 @@ const DecoderUploader = () => {
       var msg_len; // bin String converted
       var hidden_msg = ""; // encoded bin str
       var foundLen = false;
-      var foundMsg = false;
+      var foundMsg = false; // eslint-disable-line no-unused-vars
       var out_msg = "";
 
       // checking to see if encoded image and if so finding length of hidden msg
-      for (var i = 0; i < data.length; i += 2) {
-        const num = data[i];
+      for (var ind = 0; ind < data.length; ind += 2) {
+        const num = data[ind];
         const binNum = num.toString(2);
         const least_bit = binNum.slice(-1);
         len_str += least_bit;
@@ -140,7 +154,6 @@ const DecoderUploader = () => {
           }
         }
       }
-      console.log(msg_len);
 
       if (foundLen) {
         const startIndex = (msg_len.toString().length + 1) * 8 * 2;
@@ -182,7 +195,7 @@ const DecoderUploader = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-
+    setTimeout(function() {}, 2000);
     sendImageKey();
     setTimeout(function() {
       setMode("End");
@@ -231,9 +244,11 @@ const DecoderUploader = () => {
               {fileNameToDecode}
             </label>
           </div>
-          {imgData ? (
+          {imgData && image !== null ? (
             <Description>
-              This is the encoded image you uploaded! <br></br>
+              This is the encoded image you uploaded! If you do not see the
+              photo yet, please wait before submitting the image! Remember the
+              larger the photo, the longer it will take. <br></br>
               <br></br>
             </Description>
           ) : (
@@ -247,7 +262,7 @@ const DecoderUploader = () => {
               justifyContent: "center"
             }}
           >
-            <canvas ref={canvas} width={60} height={60} />
+            <canvas ref={canvas} width={width} height={height} />
           </div>
 
           <div
@@ -287,15 +302,7 @@ const DecoderUploader = () => {
             alignItems: "center",
             justifyContent: "center"
           }}
-        >
-          <input
-            style={{ background: "#00DE66", border: "0px" }}
-            type="button"
-            value="Decode Another Image"
-            className="btn"
-            onClick={() => setMode("Start")}
-          ></input>
-        </div>
+        ></div>
       </div>
     );
   }
