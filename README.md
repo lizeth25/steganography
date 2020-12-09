@@ -1,5 +1,5 @@
 # StegMsg
-
+[Website](https://stegmsg.herokuapp.com/)
 StegMsg is an educational application which will allow students to send each other encoded images (which have been encrypted) to each other through the use of steganography. 
 
 You can simply start off by uploading an image and a message which will be sent over to our server and be encoded. Then your new photo will be downloaded and you will receive a private key which you can share with whom you'd like to share your photo and message with.
