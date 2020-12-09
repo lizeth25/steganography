@@ -6,14 +6,13 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src"
   },
   "keywords": [],
   "contributors": [
-    "Student1 <student1@middlebury.edu>",
-    "Student2 <student2@middlebury.edu>"
+    "Erika Nakagawa <enakagawa@middlebury.edu>",
+    "Lizeth Lucero <llucero@middlebury.edu>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
@@ -23,6 +22,8 @@
     "axios": "^0.21.0",
     "bootstrap": "^4.4.1",
     "browserify": "^17.0.0",
+    "downloadjs": "^1.4.7",
+    "form-data": "^3.0.0",
     "get-pixels": "^3.3.2",
     "i": "^0.3.6",
     "jquery-browserify": "^1.8.1",

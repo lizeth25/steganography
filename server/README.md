@@ -10,14 +10,6 @@ You should install the dependencies from the "top-level" package as described in
 
 ## Development
 
-### Testing with Jest
-
-The server is configured for testing with the Jest test runner. Tests can be run with:
-
-```
-npm test
-```
-
 ### Linting with ESLint
 
 The server is configured with the [AirBnB ESLint rules](https://github.com/airbnb/javascript). You can run the linter with `npm run lint` or `npx eslint .`. Include the `--fix` option to `eslint` to automatically fix many formatting errors, e.g. `npm run lint -- --fix`, although note that the "fix" option can introduce errors so we recommended committing beforehand.
@@ -38,18 +30,4 @@ and `.eslintrc.json` configured with:
     "jest": true
   }
 }
-```
-
-### Managing Secrets
-
-The skeleton uses the [dotenv](https://www.npmjs.com/package/dotenv) package to load the variables in the .env file into the environment when starting the server. You can place secrets, e.g. API keys or database passwords, into that file. Those secrets should not be committed into your version control system. To prevent you from doing so, the .env file is included in the `.gitignore` file (so that it will be ignored by Git). Instead you will need to create that file manually and distribute those secrets among your team in a secure manner.
-
-If your secrets are needed by your tests (as they are here in the example), you will need to [add them to your repository in Travis-CI](https://docs.travis-ci.com/user/environment-variables/).
-
-Note that `.env` files work differently (are simpler) for the server than the CRA-based client. Instead of "local" files, there is a single `.env` file _that is not checked into version control_.
-
-To ensure we are familiar with this infrastructure, the built-in tests will fail until you create a `.dotenv` file and initialize with a `MY_SECRET` variable, e.g.
-
-```
-MY_SECRET=test
 ```

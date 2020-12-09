@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-// import PropTypes from "prop-types";
-import DecoderUploader from "./DecoderUploader";
+import DecoderTry from "./DecoderTry";
 
 const Title = styled.h1`
   text-align: center;
@@ -37,7 +36,7 @@ const Decoder = () => {
       </Description>
 
       <div style={{ padding: "1em" }}>
-        <DecoderUploader></DecoderUploader>
+        <DecoderTry></DecoderTry>
       </div>
 
       <div style={{ padding: "20px 0px" }}></div>

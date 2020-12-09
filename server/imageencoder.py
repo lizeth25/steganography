@@ -1,11 +1,10 @@
 from hello import *
 
-i = sys.argv[1]
-m = sys.argv[2] # message to use
+m = sys.argv[1] # message to use
 
-aL = convertToList(i)
-newArr, string_privatekey = to_encode(m, aL)
+encrypted3, string_privatekey = to_encrypt(m)
+string_privatekey = string_privatekey[31:857]
 
-dict = { "arr": newArr, "privateKey": str(string_privatekey) }
+dict = { "encrypted": str(encrypted3), "privateKey": string_privatekey}
 y = json.dumps(dict)
 print(y)

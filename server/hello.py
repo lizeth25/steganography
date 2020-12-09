@@ -30,7 +30,7 @@ def encodeIm(image, message):
     i = 0
 
     for index in range(0,len(arr_copy)):
-        if index%4!=3:
+        if(index%4!=3):
             # check if i is less than msgLen
             if i < msgLen:
                 binNum = f'{arr_copy[index]:08b}'
@@ -57,10 +57,10 @@ def decodeIm(image):
     # Then we keep and index and for every set of 8 bin numbers we have one character we add to our message
 
     # calculate length of the message by adding appropriate bin value to len_str until * tells us when to stop adding
-    for index in range(0, len(image)):
-        if index%4!=3:
+    for i in range(0, len(image)):
+        if(i%4!=3):
             if not foundMsg:
-                binNum = f'{image[index]:08b}'
+                binNum = f'{image[i]:08b}'
                 least_bit = binNum[-1]
                 if not foundLen:
                     if (len_str!="") and (len(len_str)%8 == 0):
@@ -88,9 +88,9 @@ def decodeIm(image):
                         index += 1
                     else:
                         foundMsg = True
-    
+
     if not foundMsg:
-        return("Not an encoded image")
+        return("Msg Not Found")
     # Our message now contains all the bits we need to convert
     out_msg = binaryToText(hidden_msg)
     # print("Your decoded message is : \n" + out_msg)
@@ -121,27 +121,45 @@ def decrypt(privatekey, b64cipher):
 
 def to_encrypt(message):
     privatekey, publickey = makeRSAkeys()
-
     encodedmsg = message.encode()
-
     encrypted = encrypt(publickey, encodedmsg)
-
     encrypted2 = str(encrypted).strip('b')
     encrypted3 = str(encrypted2).strip("'")
+    export_privatekey = privatekey.exportKey()
+    pk = export_privatekey.decode()
+    #pk2 = str(pk) # not necessary i think
+    #arr = []
+    #for i in pk:
+    #    arr.append(i)
+    return (encrypted3, pk)
 
-    string_privatekey = privatekey.exportKey()
-    return (encrypted3, string_privatekey)
-    
 def to_decrypt(string_privatekey, encrypted):
+    #tryKey = string_privatekey.encode()
 
     privatekey = RSA.importKey(string_privatekey)
-
     decrypted = str(decrypt(privatekey, encrypted))
-
     decrypted2 = decrypted.strip('b')
     decrypted3 = decrypted2.strip("'")
-
     return(decrypted3)
+
+#print("lets begin")
+#encrypted3, pk2 = to_encrypt("hello")
+
+#print(len(arr))
+#print(len(pk2))
+# pk2 normally 890 or 886
+
+#something = ""
+#for j in arr:
+#    something += j
+#print(something)
+
+
+
+#yes = "hE/R+Ftwxv2UAt+ay+6BMyTK5kBxb2SL+c9sXKsWaRrQ0lQ1R3zpfkMOK6lMXajlEitFyJ0TO4lie1W9DyeX0gBbFaX0BnpUTTY6BA/tfuSfF5i5/WEq4f6yufFS9CXpMTVwZ1TPAAfj2kgJNb8kji1J/6dsYBAJuWz1NkPbUqI="
+
+#decrypted3 = to_decrypt(pubkey2, yes)
+#print(decrypted3)
 
 def to_encode(message, image):
     encrypted, string_privatekey = to_encrypt(message)
@@ -163,7 +181,19 @@ def convertToList(a):
         outArr.append(int(elem))
     return(outArr)
 
+# encrypted3 (172)
+# (172*8+8+24 = how long array needs to be for image to be encoded)
+# returning 496(img array) , private
 
+# getKeys = return the keys private public
+# {
+#     k = thing encoding into image
+#     image arr = (len([1348]))
+# }
+
+
+
+# getImage = give 1348 return array 1348 we should be fine
 
 
 # 1546 error opt 2 193 characters
